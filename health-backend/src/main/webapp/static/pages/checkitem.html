@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh_CN">
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -26,10 +26,11 @@
     <div class="app-container">
         <div class="box">
             <div class="filter-container">
-                <el-input placeholder="项目编码/项目名称" v-model="pagination.queryString" style="width: 200px;"
+                <el-button icon="el-icon-refresh" circle @click="findAll()"></el-button>
+                <el-input placeholder="项目编码/项目名称" v-model="pagination.condition" style="width: 200px;"
                           class="filter-item"></el-input>
-                <el-button @click="findPage()" class="dalfBut">查询</el-button>
-                <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                <el-button @click="findByNameOrCode()" class="dalfBut" icon="el-icon-search">查询</el-button>
+                <el-button type="primary" class="butT" icon="el-icon-plus" @click="handleCreate()">新建</el-button>
             </div>
             <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                 <el-table-column type="index" align="center" label="序号"></el-table-column>
@@ -44,8 +45,10 @@
                 <el-table-column prop="remark" label="项目说明" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)" icon="el-icon-edit"
+                                   circle></el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)" icon="el-icon-delete"
+                                   circle></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,6 +62,7 @@
                         :total="pagination.total">
                 </el-pagination>
             </div>
+
             <!-- 新增标签弹层 -->
             <div class="add-form">
                 <el-dialog title="新增检查项" :visible.sync="dialogFormVisible">
@@ -67,12 +71,12 @@
                         <el-row>
                             <el-col :span="12">
                                 <el-form-item label="项目编码" prop="code">
-                                    <el-input v-model="formData.code"/>
+                                    <el-input v-model="formData.code"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="项目名称" prop="name">
-                                    <el-input v-model="formData.name"/>
+                                    <el-input v-model="formData.name"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -88,7 +92,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="适用年龄">
-                                    <el-input v-model="formData.age"/>
+                                    <el-input v-model="formData.age"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -103,7 +107,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="价格">
-                                    <el-input v-model="formData.price"/>
+                                    <el-input v-model="formData.price"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -137,12 +141,12 @@
                         <el-row>
                             <el-col :span="12">
                                 <el-form-item label="项目编码" prop="code">
-                                    <el-input v-model="formData.code"/>
+                                    <el-input v-model="formData.code"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="项目名称" prop="name">
-                                    <el-input v-model="formData.name"/>
+                                    <el-input v-model="formData.name"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -158,7 +162,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="适用年龄">
-                                    <el-input v-model="formData.age"/>
+                                    <el-input v-model="formData.age"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -173,7 +177,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="价格">
-                                    <el-input v-model="formData.price"/>
+                                    <el-input v-model="formData.price"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -202,6 +206,7 @@
     </div>
 </div>
 </body>
+
 <!-- 引入组件库 -->
 <script src="../js/vue.js"></script>
 <script src="../plugins/elementui/index.js"></script>
@@ -212,65 +217,220 @@
     var vue = new Vue({
         el: '#app',
         data: {
-            pagination: {//分页相关模型数据
-                currentPage: 1,//当前页码
-                pageSize: 10,//每页显示的记录数
-                total: 0,//总记录数
-                queryString: null//查询条件
+            // 分页相关模型数据
+            pagination: {
+                // 当前页码
+                currentPage: 1,
+                // 每页显示的记录数
+                pageSize: 10,
+                // 总记录数
+                total: 0,
+                // 查询条件
+                condition: null
             },
-            dataList: [],//当前页要展示的分页列表数据
-            formData: {},//表单数据
-            dialogFormVisible: false,//增加表单是否可见
-            dialogFormVisible4Edit: false,//编辑表单是否可见
-            rules: {//校验规则
+            // 当前页要展示的分页列表数据
+            dataList: [],
+            // 表单数据
+            formData: {},
+            // 增加表单是否可见
+            dialogFormVisible: false,
+            // 编辑表单是否可见
+            dialogFormVisible4Edit: false,
+            rules: {
+                // 校验规则
                 code: [{required: true, message: '项目编码为必填项', trigger: 'blur'}],
                 name: [{required: true, message: '项目名称为必填项', trigger: 'blur'}]
-            }
+            },
+            // 与服务器约定的响应码
+            SUCCESS: 0,
+            INFO: 1,
+            WARNING: 2,
+            ERROR: 3
         },
-        //钩子函数，VUE对象初始化完成后自动执行
+        // 钩子函数，VUE 对象初始化完成后自动执行
         created() {
+            this.findPage();
         },
         methods: {
-            //编辑
-            handleEdit() {
+            // 通知提示框
+            showNotice(code, msg) {
+                if (this.SUCCESS == code) {
+                    this.$notify.success({
+                        title: '成功',
+                        message: msg,
+                    });
+                } else if (this.INFO == code) {
+                    this.$notify.info({
+                        title: '提示',
+                        message: msg,
+                    });
+                } else if (this.WARNING == code) {
+                    this.$notify.warning({
+                        title: '警告',
+                        message: msg,
+                    });
+                } else if (this.ERROR == code) {
+                    this.$notify.error({
+                        title: '失败',
+                        message: msg,
+                    });
+                }
             },
-            //添加
+            // 新增
             handleAdd() {
-                //校验
+                // 校验
                 this.$refs['dataAddForm'].validate((valid) => {
                     if (valid) {
-                        //axios-ajax框架(向后台传递数据)
-                        //第一个参数请求地址，第二参数携带数据。请求完毕之后，后台返回值
-                        axios.post("/checkItem.do", this.formData).then(res => {
-                            console.log(res);
-                        })
+                        axios.post("/checkItem.do", this.formData).then(response => {
+                            if (this.SUCCESS == response.data.code) {
+                                this.dialogFormVisible = false;
+                            }
+                            this.showNotice(response.data.code, response.data.msg);
+                        }).finally(() => {
+                            this.pagination.currentPage = 1;
+                            this.pagination.condition = this.formData.code;
+                            this.findPage();
+                        });
                     } else {
-                        console.log('error submit!!');
+                        this.$message.error("表单数据校验失败！");
                         return false;
                     }
                 });
             },
-            //分页查询
+            // 分页查询
             findPage() {
+                axios({
+                    method: "get",
+                    url: "/checkItem.do",
+                    params: {
+                        currentPage: this.pagination.currentPage,
+                        pageSize: this.pagination.pageSize,
+                        condition: this.pagination.condition
+                    }
+                }).then(response => {
+                    if (this.SUCCESS == response.data.code) {
+                        // 为模型数据赋值，基于 Vue 的双向绑定展示到页面
+                        this.dataList = response.data.resultMap.pageData.list;
+                        this.pagination.total = response.data.resultMap.pageData.total;
+                    } else {
+                        this.showNotice(response.data.code, response.data.msg);
+                    }
+                })
+            },
+            // 根据条件查询
+            findByNameOrCode() {
+                this.pagination.currentPage = 1;
+                this.findPage();
+            },
+            // 所有数据
+            findAll() {
+                this.pagination.currentPage = 1;
+                this.pagination.condition = "";
+                this.findPage();
             },
             // 重置表单
             resetForm() {
+                this.formData = {};
             },
             // 弹出添加窗口
             handleCreate() {
-                //新增弹出框打开
+                this.resetForm();
                 this.dialogFormVisible = true;
-
-            },
-            // 弹出编辑窗口
-            handleUpdate(row) {
             },
             // 切换页码
             handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
             },
             // 删除
             handleDelete(row) {
-            }
+                this.$confirm('确定要删除项目编码为【' + row.code + '】的检查项吗？', '删除提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 根据 id 删除检查项
+                    axios({
+                        method: "post",
+                        url: "/checkItem.do",
+                        data: {
+                            "_method": "delete",
+                            "checkItemId": row.id
+                        },
+                        transformRequest: [function (data) {
+                            // Do whatever you want to transform the data
+                            let ret = '';
+                            for (let it in data) {
+                                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                            }
+                            return ret;
+                        }],
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }).then(response => {
+                        this.showNotice(response.data.code, response.data.msg);
+                    }).finally(() => {
+                        this.findPage();
+                    })
+                }).catch(() => {
+                });
+            },
+            // 弹出编辑窗口
+            handleUpdate(row) {
+                this.resetForm();
+                // 查询当前检查项数据
+                axios({
+                    method: "get",
+                    url: "/checkItem/" + row.id + ".do"
+                }).then(response => {
+                    if (this.SUCCESS == response.data.code) {
+                        // 打开编辑框
+                        this.dialogFormVisible4Edit = true;
+                        // 为模型数据设置值，基于 VUE 双向数据绑定回显到页面
+                        this.formData = response.data.resultMap.checkItem;
+                    } else {
+                        this.showNotice(response.data.code, response.data.msg);
+                    }
+                })
+            },
+            // 编辑
+            handleEdit() {
+                // 表单校验
+                this.$refs['dataEditForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: "post",
+                            url: "/checkItem.do",
+                            data: this.formData,
+                            transformRequest: [function (data) {
+                                // Do whatever you want to transform the data
+                                let ret = '';
+                                for (let it in data) {
+                                    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                                }
+                                ret += "_method=put";
+                                console.log(ret);
+                                return ret;
+                            }],
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        }).then(response => {
+                            if (this.SUCCESS == response.data.code) {
+                                this.dialogFormVisible4Edit = false;
+                            }
+                            this.showNotice(response.data.code, response.data.msg);
+                        }).finally(() => {
+                            this.findPage();
+                        })
+                    } else {
+                        // 表单校验失败
+                        this.$message.error("表单数据校验失败！");
+                        return false;
+                    }
+                });
+            },
         }
     })
 </script>

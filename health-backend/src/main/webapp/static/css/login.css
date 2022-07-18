@@ -35,7 +35,7 @@ html, body {
 .login-container .loginBox {
     height: 100%;
     width: 100%;
-    background: url('./../img/logingBg.png') no-repeat 100% 100%;
+    background: url('../img/logingBg.png') no-repeat 100% 100%;
     position: relative;
 }
 
@@ -102,7 +102,7 @@ html, body {
     height: 100%;
     width: 100%;
     background-color: #2d3a4b;
-    background: url('./../img/bg.jpg');
+    background: url('../img/bg.jpg');
     -moz-background-size: 100% 100%;
     background-size: 100% 100%;
     background-repeat: no-repeat;

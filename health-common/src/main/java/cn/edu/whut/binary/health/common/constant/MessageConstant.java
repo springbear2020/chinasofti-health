@@ -5,6 +5,7 @@ package cn.edu.whut.binary.health.common.constant;
  * @datetime 2022-07-16 18:33 Saturday
  */
 public class MessageConstant {
+    public static final String PARAMETERS_NEEDED = "请求参数不正确";
     public static final String DELETE_CHECK_ITEM_FAIL = "删除检查项失败";
     public static final String DELETE_CHECK_ITEM_SUCCESS = "删除检查项成功";
     public static final String ADD_CHECK_ITEM_SUCCESS = "新增检查项成功";
@@ -13,6 +14,8 @@ public class MessageConstant {
     public static final String EDIT_CHECK_ITEM_SUCCESS = "编辑检查项成功";
     public static final String QUERY_CHECK_ITEM_SUCCESS = "查询检查项成功";
     public static final String QUERY_CHECK_ITEM_FAIL = "查询检查项失败";
+    public static final String QUERY_CHECK_ITEM_NO_DATA = "无符合条件的检查项数据";
+    public static final String CHECK_ITEM_GROUP_RELATION_EXISTS = "检查项与检查组存在关联，不能删除";
     public static final String UPLOAD_SUCCESS = "上传成功";
     public static final String ADD_CHECK_GROUP_FAIL = "新增检查组失败";
     public static final String ADD_CHECK_GROUP_SUCCESS = "新增检查组成功";

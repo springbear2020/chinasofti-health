@@ -6,11 +6,15 @@ import java.io.Serializable;
  * @author Spring-_-Bear
  * @datetime 2022-07-16 17:00 Saturday
  */
-public class QueryPageBean implements Serializable {
+public class PageQueryBean implements Serializable {
     private static final long serialVersionUID = 3906417761607595170L;
+    /**
+     * 显示的页码数量
+     */
+    public static final int PAGE_NUMS = 8;
 
     /**
-     * 当前页面
+     * 当前页码
      */
     private Integer currentPage;
     /**
@@ -20,15 +24,15 @@ public class QueryPageBean implements Serializable {
     /**
      * 查询条件
      */
-    private String queryString;
+    private String condition;
 
-    public QueryPageBean() {
+    public PageQueryBean() {
     }
 
-    public QueryPageBean(Integer currentPage, Integer pageSize, String queryString) {
+    public PageQueryBean(Integer currentPage, Integer pageSize, String condition) {
         this.currentPage = currentPage;
         this.pageSize = pageSize;
-        this.queryString = queryString;
+        this.condition = condition;
     }
 
     public Integer getCurrentPage() {
@@ -47,20 +51,20 @@ public class QueryPageBean implements Serializable {
         this.pageSize = pageSize;
     }
 
-    public String getQueryString() {
-        return queryString;
+    public String getCondition() {
+        return condition;
     }
 
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     @Override
     public String toString() {
-        return "QueryPageBean{" +
+        return "PageQueryBean{" +
                 "currentPage=" + currentPage +
                 ", pageSize=" + pageSize +
-                ", queryString='" + queryString + '\'' +
+                ", condition='" + condition + '\'' +
                 '}';
     }
 }

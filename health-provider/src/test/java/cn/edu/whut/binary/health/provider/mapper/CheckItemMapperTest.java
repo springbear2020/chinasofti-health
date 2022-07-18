@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
 
 /**
  * @author Spring-_-Bear
@@ -22,5 +24,24 @@ public class CheckItemMapperTest {
     public void saveCheckItem() {
         CheckItem checkItem = new CheckItem(null, "1", "lcx", "男", "23-32", 23F, "1", "无", "无");
         System.out.println(checkItemMapper.saveCheckItem(checkItem));
+    }
+
+    @Test
+    public void getCheckItemByCodeOrName() {
+        List<CheckItem> checkItemList = checkItemMapper.getCheckItemByCodeOrName(null);
+        checkItemList.forEach(System.out::println);
+    }
+
+    @Test
+    public void getCheckGroupNumsByCheckItem() {
+        System.out.println(checkItemMapper.getCheckGroupNumsByCheckItem(28));
+    }
+
+    @Test
+    public void updateCheckItemById() {
+        CheckItem checkItem = new CheckItem();
+        checkItem.setId(133);
+        checkItem.setSex("男");
+        System.out.println(checkItemMapper.updateCheckItemById(checkItem));
     }
 }

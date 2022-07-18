@@ -7,12 +7,11 @@
                         http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/mvc
                         http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <!-- 组件扫描 -->
+    <!-- Controller scan -->
     <context:component-scan base-package="cn.edu.whut.binary.health.backend.controller"/>
 
-    <!-- 注解驱动 -->
     <mvc:annotation-driven>
-        <!-- JSON 消息转换器 -->
+        <!-- JSON -->
         <mvc:message-converters>
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes" value="application/json"/>

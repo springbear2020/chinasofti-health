@@ -4,16 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
-        <!-- 自动驼峰命名转换 -->
+        <!-- Auto camel case rename -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     <typeAliases>
-        <!-- 类别名 -->
+        <!-- POJO alias -->
         <package name="cn.edu.whut.binary.health.common.pojo"/>
     </typeAliases>
-    <!-- TODO  -->
-<!--    <plugins>-->
-<!--        &lt;!&ndash; 分页插件 &ndash;&gt;-->
-<!--        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>-->
-<!--    </plugins>-->
+    <plugins>
+        <!-- Pagination -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+    </plugins>
 </configuration>

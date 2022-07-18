@@ -4,11 +4,11 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <!-- 组件扫描 -->
-    <context:component-scan base-package="cn.edu.whut.binary.health.provider.mapper,
-            cn.edu.whut.binary.health.provider.service.impl"/>
+    <!-- Component scan -->
+    <context:component-scan
+            base-package="cn.edu.whut.binary.health.provider.mapper, cn.edu.whut.binary.health.provider.service.impl"/>
 
-    <!-- 数据源-->
+    <!-- Datasource-->
     <context:property-placeholder location="classpath:jdbc.properties"/>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClass}"/>
@@ -16,16 +16,16 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>
-    <!-- SQL 会话工厂 -->
+    <!-- SQL session factory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
     </bean>
-    <!-- Mapper 接口扫描 -->
+    <!-- Mapper interface -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <property name="basePackage" value="cn.edu.whut.binary.health.provider.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
     <!-- Dubbo -->

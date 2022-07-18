@@ -3,4 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.whut.binary.health.provider.mapper.CheckItemMapper">
+    <!-- List<CheckItem> getCheckItemByCodeOrName(@Param("condition") String condition); -->
+    <select id="getCheckItemByCodeOrName" resultType="checkItem">
+        select *
+        from t_checkitem
+        <where>
+            <if test="condition != null and condition != ''">and name = #{condition} or code = #{condition}</if>
+        </where>
+    </select>
+
+    <!-- int updateCheckItemById(CheckItem checkItem); -->
+    <update id="updateCheckItemById" parameterType="CheckItem">
+        update t_checkitem
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

@@ -23,5 +23,11 @@
             <artifactId>health-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Pagination -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
     </dependencies>
 </project>
