@@ -1,903 +1,298 @@
-# 第2章 预约管理-检查项管理
+> 开发时间：2022-07.04 - 至今
 
-## 1. 需求分析
+# 一、快速开始
 
-美年健康管理系统是一款应用于健康管理机构的业务系统，实现健康管理机构工作内容可视化、患者管理专业化、健康评估数字化、健康干预流程化、知识库集成化，从而提高健康管理师的工作效率，加强与患者间的互动，增强管理者对健康管理机构运营情况的了解。
-
-系统分为美年健康后台管理系统和移动端应用两部分。其中后台系统提供给健康管理机构内部人员（包括系统管理员、健康管理师等）使用，微信端应用提供给健康管理机构的用户（体检用户）使用。
-
-本项目功能架构图：
-
-![1](img/1.png)
-
-通过上面的功能架构图可以看到，美年健康后台管理系统有会员管理、预约管理、健康评估、健康干预等功能。移动端有会员管理、体检预约、体检报告等功能。后台系统和移动端应用都会通过Dubbo调用服务层发布的服务来完成具体的操作。本项目属于典型的SOA架构形式。
-
-本章节完成的功能开发是预约管理功能，包括检查项管理、检查组管理、体检套餐管理、预约设置等（参见产品原型）。预约管理属于系统的基础功能，主要就是管理一些体检的基础数据。
-
-## 2. 基础环境搭建
-
-### 2.1 导入预约管理模块数据表
-
-操作步骤：
-
-（1）根据资料中提供的health.pdm文件导出SQL脚本
-
-![2](img/2.png)
-
- 
-
-![3](img/3.png)
-
-（2）创建本项目使用的数据库health
-
-![4](img/4.png)
-
-（3）将PowerDesigner导出的SQL脚本导入health数据库进行建表
-
-![5](img/5.png)
-
-### 2.2 导入预约管理模块实体类
-
-将资料中提供的POJO实体类复制到health_common工程中com.bigdata.pojo。
-
-### 2.3 导入项目所需公共资源
-
-项目开发过程中一般会提供一些公共资源，供多个模块或者系统来使用。
-
-本章节我们导入的公共资源有：
-
-（1）返回消息常量类MessageConstant，放到health_common工程中
-
-```
-package com.bigdata.constant;
-
-/**
- * 消息常量
- */
-public class MessageConstant {
-    public static final String DELETE_CHECKITEM_FAIL = "删除检查项失败";
-    public static final String DELETE_CHECKITEM_SUCCESS = "删除检查项成功";
-    public static final String ADD_CHECKITEM_SUCCESS = "新增检查项成功";
-    public static final String ADD_CHECKITEM_FAIL = "新增检查项失败";
-    public static final String EDIT_CHECKITEM_FAIL = "编辑检查项失败";
-    public static final String EDIT_CHECKITEM_SUCCESS = "编辑检查项成功";
-    public static final String QUERY_CHECKITEM_SUCCESS = "查询检查项成功";
-    public static final String QUERY_CHECKITEM_FAIL = "查询检查项失败";
-    public static final String UPLOAD_SUCCESS = "上传成功";
-    public static final String ADD_CHECKGROUP_FAIL = "新增检查组失败";
-    public static final String ADD_CHECKGROUP_SUCCESS = "新增检查组成功";
-    public static final String DELETE_CHECKGROUP_FAIL = "删除检查组失败";
-    public static final String DELETE_CHECKGROUP_SUCCESS = "删除检查组成功";
-    public static final String QUERY_CHECKGROUP_SUCCESS = "查询检查组成功";
-    public static final String QUERY_CHECKGROUP_FAIL = "查询检查组失败";
-    public static final String EDIT_CHECKGROUP_FAIL = "编辑检查组失败";
-    public static final String EDIT_CHECKGROUP_SUCCESS = "编辑检查组成功";
-    public static final String PIC_UPLOAD_SUCCESS = "图片上传成功";
-    public static final String PIC_UPLOAD_FAIL = "图片上传失败";
-    public static final String ADD_SETMEAL_FAIL = "新增套餐失败";
-    public static final String ADD_SETMEAL_SUCCESS = "新增套餐成功";
-    public static final String IMPORT_ORDERSETTING_FAIL = "批量导入预约设置数据失败";
-    public static final String IMPORT_ORDERSETTING_SUCCESS = "批量导入预约设置数据成功";
-    public static final String GET_ORDERSETTING_SUCCESS = "获取预约设置数据成功";
-    public static final String GET_ORDERSETTING_FAIL = "获取预约设置数据失败";
-    public static final String ORDERSETTING_SUCCESS = "预约设置成功";
-    public static final String ORDERSETTING_FAIL = "预约设置失败";
-    public static final String ADD_MEMBER_FAIL = "新增会员失败";
-    public static final String ADD_MEMBER_SUCCESS = "新增会员成功";
-    public static final String DELETE_MEMBER_FAIL = "删除会员失败";
-    public static final String DELETE_MEMBER_SUCCESS = "删除会员成功";
-    public static final String EDIT_MEMBER_FAIL = "编辑会员失败";
-    public static final String EDIT_MEMBER_SUCCESS = "编辑会员成功";
-    public static final String TELEPHONE_VALIDATECODE_NOTNULL = "手机号和验证码都不能为空";
-    public static final String LOGIN_SUCCESS = "登录成功";
-    public static final String VALIDATECODE_ERROR = "验证码输入错误";
-    public static final String QUERY_ORDER_SUCCESS = "查询预约信息成功";
-    public static final String QUERY_ORDER_FAIL = "查询预约信息失败";
-    public static final String QUERY_SETMEALLIST_SUCCESS = "查询套餐列表数据成功";
-    public static final String QUERY_SETMEALLIST_FAIL = "查询套餐列表数据失败";
-    public static final String QUERY_SETMEAL_SUCCESS = "查询套餐数据成功";
-    public static final String QUERY_SETMEAL_FAIL = "查询套餐数据失败";
-    public static final String SEND_VALIDATECODE_FAIL = "验证码发送失败";
-    public static final String SEND_VALIDATECODE_SUCCESS = "验证码发送成功";
-    public static final String SELECTED_DATE_CANNOT_ORDER = "所选日期不能进行体检预约";
-    public static final String ORDER_FULL = "预约已满";
-    public static final String HAS_ORDERED = "已经完成预约，不能重复预约";
-    public static final String ORDER_SUCCESS = "预约成功";
-    public static final String ORDER_FAIL = "预约失败";
-    public static final String GET_USERNAME_SUCCESS = "获取当前登录用户名称成功";
-    public static final String GET_USERNAME_FAIL = "获取当前登录用户名称失败";
-    public static final String GET_MENU_SUCCESS = "获取当前登录用户菜单成功";
-    public static final String GET_MENU_FAIL = "获取当前登录用户菜单失败";
-    public static final String GET_MEMBER_NUMBER_REPORT_SUCCESS = "获取会员统计数据成功";
-    public static final String GET_MEMBER_NUMBER_REPORT_FAIL = "获取会员统计数据失败";
-    public static final String GET_SETMEAL_COUNT_REPORT_SUCCESS = "获取套餐统计数据成功";
-    public static final String GET_SETMEAL_COUNT_REPORT_FAIL = "获取套餐统计数据失败";
-    public static final String GET_BUSINESS_REPORT_SUCCESS = "获取运营统计数据成功";
-    public static final String GET_BUSINESS_REPORT_FAIL = "获取运营统计数据失败";
-    public static final String GET_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
-    public static final String GET_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
-}
-```
-
-（2）返回结果Result和PageResult类，放到health_common工程中
-
-```
-package com.bigdata.entity;
-import java.io.Serializable;
-/**
- * 封装返回结果
- */
-public class Result implements Serializable{
-    private boolean flag;//执行结果，true为执行成功 false为执行失败
-    private String message;//返回提示信息，主要用于页面提示信息
-    private Object data;//返回数据
-    public Result(boolean flag, String message) {
-        super();
-        this.flag = flag;
-        this.message = message;
-    }
-    public Result(boolean flag, String message, Object data) {
-        this.flag = flag;
-        this.message = message;
-        this.data = data;
-    }
-    public boolean isFlag() {
-        return flag;
-    }
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
-    public Object getData() {
-        return data;
-    }
-    public void setData(Object data) {
-        this.data = data;
-    }
-}
-```
-
-```
-package com.bigdata.entity;
-import java.io.Serializable;
-import java.util.List;
-/**
- * 分页结果封装对象
- */
-public class PageResult implements Serializable{
-    private Long total;//总记录数
-    private List rows;//当前页结果
-    public PageResult(Long total, List rows) {
-        super();
-        this.total = total;
-        this.rows = rows;
-    }
-    public Long getTotal() {
-        return total;
-    }
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-    public List getRows() {
-        return rows;
-    }
-    public void setRows(List rows) {
-        this.rows = rows;
-    }
-}
-```
-
-（3）封装查询条件的QueryPageBean类，放到health_common工程中
-
-```
-package com.bigdata.entity;
-import java.io.Serializable;
-/**
- * 封装查询条件
- */
-public class QueryPageBean implements Serializable{
-    private Integer currentPage;//页码
-    private Integer pageSize;//每页记录数
-    private String queryString;//查询条件
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
-    public Integer getPageSize() {
-        return pageSize;
-    }
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-    public String getQueryString() {
-        return queryString;
-    }
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
-    }
-}
-```
-
-（4）html、js、css、图片等页面静态资源，放到health_backend工程中webapp目录下
-
-注意：后续随着项目开发还会陆续导入其他一些公共资源。
-
-（5）检查各个项目java、resources、webapp状态
-
-![5](img/36.png)
-
-（6）启动项目，访问http://localhost:82/pages/main.html
-
-
-
-![5](img/35.png)
-
-## 3. 新增检查项
-
-### 3.1 完善页面
-
-检查项管理页面对应的是checkitem.html页面，根据产品设计的原型已经完成了页面基本结构的编写，现在需要完善页面动态效果。
-
-#### 3.1.1 弹出新增窗口
-
-页面中已经提供了新增窗口，只是处于隐藏状态。只需要将控制展示状态的属性dialogFormVisible改为true就可以显示出新增窗口。
-
-新建按钮绑定的方法为handleCreate，所以在handleCreate方法中修改dialogFormVisible属性的值为true即可。同时为了增加用户体验度，需要每次点击新建按钮时清空表单输入项。
-
-```
-// 重置表单
-resetForm() {
-    this.formData = {};
-},
-// 弹出添加窗口
-handleCreate() {
-    this.resetForm();
-    this.dialogFormVisible = true;
-}
-```
-
-#### 3.1.2 输入校验（已加）
-
-```
-rules: {//校验规则
-    code: [{ required: true, message: '项目编码为必填项', trigger: 'blur' }],
-    name: [{ required: true, message: '项目名称为必填项', trigger: 'blur' }]
-}
-```
-
-#### 3.1.3 提交表单数据
-
-点击新增窗口中的确定按钮时，触发handleAdd方法，所以需要在handleAdd方法中进行完善。
-
-```
-handleAdd () {
-  //校验表单输入项是否合法
-  this.$refs['dataAddForm'].validate((valid) => {
-    if (valid) {
-      //表单数据校验通过，发送ajax请求将表单数据提交到后台
-      axios.post("/checkitem/add.do",this.formData).then((response)=> {
-        //隐藏新增窗口
-        this.dialogFormVisible = false;
-        //判断后台返回的flag值，true表示添加操作成功，false为添加操作失败
-        if(response.data.flag){
-          //Message不同状态
-          this.$message({
-            message: response.data.message,
-            type: 'success'
-          });
-        }else{
-          this.$message.error(response.data.message);
-        }
-      }).finally(()=> {
-        this.findPage();
-      });
-    } else {
-      this.$message.error("表单数据校验失败");
-      return false;
-    }
-  });
-}
-```
-
-### 3.2 后台代码
-
-#### 3.2.1 Controller
-
-在health_backend工程中创建CheckItemController
-
-```
-package com.bigdata.controller;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.bigdata.constant.MessageConstant;
-import com.bigdata.entity.PageResult;
-import com.bigdata.entity.QueryPageBean;
-import com.bigdata.entity.Result;
-import com.bigdata.pojo.CheckItem;
-import com.bigdata.service.CheckItemService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
-/**
- * 体检检查项管理
- */
-@RestController
-@RequestMapping("/checkitem")
-public class CheckItemController {
-
-    @Reference
-    private CheckItemService checkItemService;
-
-    //新增
-    @RequestMapping("/add")
-    public Result add(@RequestBody CheckItem checkItem){
-        try {
-            checkItemService.add(checkItem);
-        }catch (Exception e){
-            return new Result(false,MessageConstant.ADD_CHECKITEM_FAIL);
-        }
-        return new Result(true,MessageConstant.ADD_CHECKITEM_SUCCESS);
-    }
-}
-```
-
-#### 3.2.2 服务接口
-
-在health_interface工程中创建CheckItemService接口
-
-```
-package com.bigdata.service;
-import com.bigdata.pojo.CheckItem;
-import java.util.List;
-/**
- * 检查项服务接口
- */
-public interface CheckItemService {
-    public void add(CheckItem checkItem);
-}
-```
-
-#### 3.2.3 服务实现类
-
-在health_service_provider工程中创建CheckItemServiceImpl实现类
-
-```
-package com.bigdata.service;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.bigdata.dao.CheckItemDao;
-import com.bigdata.pojo.CheckItem;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-/**
- * 检查项服务
- */
-//服务提供者暴露服务配置
-@Service(interfaceClass = CheckItemService.class)
-@Transactional
-public class CheckItemServiceImpl implements CheckItemService {
-
-    @Autowired
-    private CheckItemDao checkItemDao;
-    
-    //新增
-
-    public void add(CheckItem checkItem) {
-        checkItemDao.add(checkItem);
-    }
-}
-```
-
-#### 3.2.4 Dao接口
-
-在health_service_provider工程中创建CheckItemDao接口，本项目是基于Mybatis的Mapper代理技术实现持久层操作，故只需要提供接口和Mapper映射文件，无须提供实现类
-
-```
-package com.bigdata.dao;
-import com.bigdata.pojo.CheckItem;
-/**
- * 持久层Dao接口
- */
-public interface CheckItemDao {
-    public void add(CheckItem checkItem);
-}
-```
-
-#### 3.2.5 Mapper映射文件
-
-health_service_provider工程中创建CheckItemDao.xml映射文件。
-
-在resources目录下新建mapper文件夹
-
-```
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.bigdata.dao.CheckItemDao">
-    <!--新增-->
-    <insert id="add" parameterType="com.bigdata.pojo.CheckItem">
-        insert into t_checkitem(code,name,sex,age,price,type,attention,remark)
-                      values 
-        (#{code},#{name},#{sex},#{age},#{price},#{type},#{attention},#{remark})
-    </insert>
-</mapper>
-```
-
-
-
-## 4. 检查项分页
-
-本项目所有分页功能都是基于ajax的异步请求来完成的，请求参数和后台响应数据格式都使用json数据格式。
-
-请求参数包括页码、每页显示记录数、查询条件。
-
-请求参数的json格式为：{currentPage:1,pageSize:10,queryString:''baidu''}
-
-后台响应数据包括总记录数、当前页需要展示的数据集合。
-
-响应数据的json格式为：{total:1000,rows:[]}
-
-如下图：
-
-![6](img/6.png)
-
-### 4.1 完善页面
-
-#### 4.1.1 定义分页相关模型数据（已加）
-
-```
-pagination: {//分页相关模型数据
-  currentPage: 1,//当前页码
-  pageSize:10,//每页显示的记录数
-  total:0,//总记录数
-  queryString:null//查询条件
-},
-dataList: [],//当前页要展示的分页列表数据
-```
-
-#### 4.1.2 定义分页方法
-
-在页面中提供了findPage方法用于分页查询，为了能够在checkitem.html页面加载后直接可以展示分页数据，可以在VUE提供的钩子函数created中调用findPage方法
-
-```
-//钩子函数，VUE对象初始化完成后自动执行
-created() {
-  this.findPage();
-}
-//分页查询
-findPage() {
-  //分页参数
-  var param = {
-    currentPage:this.pagination.currentPage,//页码
-    pageSize:this.pagination.pageSize,//每页显示的记录数
-    queryString:this.pagination.queryString//查询条件
-  };
-  //请求后台
-  axios.post("/checkitem/findPage.do",param).then((response)=> {
-    //为模型数据赋值，基于Vue的双向绑定展示到页面
-    this.dataList = response.data.rows;
-    this.pagination.total = response.data.total;
-  });
-}
-```
-
-#### 4.1.3 完善分页方法执行时机
-
-除了在created钩子函数中调用findPage方法查询分页数据之外，当用户点击查询按钮或者点击分页条中的页码时也需要调用findPage方法重新发起查询请求。
-
-为查询按钮绑定单击事件，调用findPage方法
-
-```
-<el-button @click="findPage()" class="dalfBut">查询</el-button>
-```
-
-为分页条组件绑定current-change事件，此事件是分页条组件自己定义的事件，当页码改变时触发，对应的处理函数为handleCurrentChange
-
-```
-<el-pagination
-               class="pagiantion"
-               @current-change="handleCurrentChange"
-               :current-page="pagination.currentPage"
-               :page-size="pagination.pageSize"
-               layout="total, prev, pager, next, jumper"
-               :total="pagination.total">
-</el-pagination>
-```
-
-定义handleCurrentChange方法
-
-```
-//切换页码
-handleCurrentChange(currentPage) {
-  //currentPage为切换后的页码
-  this.pagination.currentPage = currentPage;
-  this.findPage();
-}
-```
-
-### 4.2 后台代码
-
-#### 4.2.1 Controller
-
-在CheckItemController中增加分页查询方法
-
-```
-//分页查询
-@RequestMapping("/findPage")
-public PageResult findPage(@RequestBody QueryPageBean queryPageBean){
-    PageResult pageResult = checkItemService.pageQuery(
-    queryPageBean.getCurrentPage(), 
-    queryPageBean.getPageSize(), 
-    queryPageBean.getQueryString());
-    return pageResult;
-}
-```
-
-#### 4.2.2 服务接口
-
-在CheckItemService服务接口中扩展分页查询方法
-
-```
-public PageResult pageQuery(Integer currentPage, Integer pageSize, String queryString);
-```
-
-#### 4.2.3 服务实现类
-
-在CheckItemServiceImpl服务实现类中实现分页查询方法，基于Mybatis分页助手插件实现分页
-
-```
-public PageResult pageQuery(Integer currentPage, Integer pageSize, String queryString) {
-  PageHelper.startPage(currentPage,pageSize);
-  Page<CheckItem> page = checkItemDao.selectByCondition(queryString);
-  return new PageResult(page.getTotal(),page.getResult());
-}
-```
-
-#### 4.2.4 Dao接口
-
-在CheckItemDao接口中扩展分页查询方法
-
-```
-public Page<CheckItem> selectByCondition(String queryString);
-```
-
-#### 4.2.5 Mapper映射文件
-
-在CheckItemDao.xml文件中增加SQL定义
-
-```
-<select id="selectByCondition" parameterType="string" 
-        resultType="com.bigdata.pojo.CheckItem">
-  select * from t_checkitem
-  <if test="value != null and value.length > 0">
-    where code = #{value} or name = #{value}
-  </if>
-</select>
-```
-
-## 5. 删除检查项
-
-### 5.1 完善页面
-
-为了防止用户误操作，点击删除按钮时需要弹出确认删除的提示，用户点击取消则不做任何操作，用户点击确定按钮再提交删除请求。
-
-#### 5.1.1 绑定单击事件
-
-需要为删除按钮绑定单击事件，并且将当前行数据作为参数传递给处理函数
-
-```
-<el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-// 删除
-handleDelete(row) {
-  alert(row.id);
-}
-```
-
-#### 5.1.2 弹出确认操作提示
-
-用户点击删除按钮会执行handleDelete方法，此处需要完善handleDelete方法，弹出确认提示信息。ElementUI提供了$confirm方法来实现确认提示信息弹框效果
-
-```
-// 删除
-handleDelete(row) {
-  //alert(row.id);
-  this.$confirm("确认删除当前选中记录吗？","提示",{type:'warning'}).then(()=>{
-    //点击确定按钮时只需此处代码
-    alert('用户点击的是确定按钮');
-  });
-}
-```
-
-#### 5.1.3 发送请求
-
-如果用户点击确定按钮就需要发送ajax请求，并且将当前检查项的id作为参数提交到后台进行删除操作
-
-```
-// 删除
-handleDelete(row) {
-  //alert(row.id);
-  this.$confirm("确认删除吗？","提示",{type:'warning'}).then(()=>{
-    //点击确定按钮时只需此处代码
-    //alert('用户点击的是确定按钮');
-    axios.get("/checkitem/delete.do?id=" + row.id).then((res)=> {
-      if(!res.data.flag){
-        //删除失败
-        this.$message.error(res.data.message);
-      }else{
-        //删除成功
-        this.$message({
-          message: res.data.message,
-          type: 'success'
-        });
-        //调用分页，获取最新分页数据
-        this.findPage();
-      }
-    });
-  });
-}
-```
-
-### 5.2 后台代码
-
-#### 5.2.1 Controller
-
-在CheckItemController中增加删除方法
-
-```
-//删除
-@RequestMapping("/delete")
-public Result delete(Integer id){
-  try {
-    checkItemService.delete(id);
-  }catch (RuntimeException e){
-    return new Result(false,e.getMessage());
-  }catch (Exception e){
-    return new Result(false, MessageConstant.DELETE_CHECKITEM_FAIL);
-  }
-  return new Result(true,MessageConstant.DELETE_CHECKITEM_SUCCESS);
-}
-```
-
-#### 5.2.2 服务接口
-
-在CheckItemService服务接口中扩展删除方法
-
-```
-public void delete(Integer id);
-```
-
-#### 5.2.3 服务实现类
-
-注意：不能直接删除，需要判断当前检查项是否和检查组关联，如果已经和检查组进行了关联则不允许删除
-
-```
-//删除
-public void delete(Integer id) throws RuntimeException{
-  //查询当前检查项是否和检查组关联
-  long count = checkItemDao.findCountByCheckItemId(id);
-  if(count > 0){
-    //当前检查项被引用，不能删除
-    throw new RuntimeException("当前检查项被引用，不能删除");
-  }
-  checkItemDao.deleteById(id);
-}
-```
-
-#### 5.2.4 Dao接口
-
-在CheckItemDao接口中扩展方法findCountByCheckItemId和deleteById
-
-```
-public long findCountByCheckItemId(Integer checkItemId);
-public void deleteById(Integer id);
-```
-
-#### 5.2.5 Mapper映射文件
-
-在CheckItemDao.xml中扩展SQL语句
-
-```
-<!--根据检查项id查询中间关系表-->
-<select id="findCountByCheckItemId" resultType="long" parameterType="int">
-  select count(*) from t_checkgroup_checkitem where checkitem_id = #{checkitem_id}
-</select>
-
-<!--删除-->
-<delete id="deleteById" parameterType="int">
-  delete from t_checkitem where id = #{id}
-</delete>
-```
-
-## 6. 编辑检查项
-
-### 6.1 完善页面
-
-用户点击编辑按钮时，需要弹出编辑窗口并且将当前记录的数据进行回显，用户修改完成后点击确定按钮将修改后的数据提交到后台进行数据库操作。
-
-#### 6.1.1 绑定单击事件
-
-需要为编辑按钮绑定单击事件，并且将当前行数据作为参数传递给处理函数
-
-```
-<el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-handleUpdate(row) {
-  alert(row);
-}
-```
-
-#### 6.1.2 弹出编辑窗口回显数据
-
-当前页面中的编辑窗口已经提供好了，默认处于隐藏状态。在handleUpdate方法中需要将编辑窗口展示出来，并且需要发送ajax请求查询当前检查项数据用于回显
-
-```
-// 弹出编辑窗口
-handleUpdate(row) {
-  //发送请求获取检查项信息
-  axios.get("/checkitem/findById.do?id=" + row.id).then((res)=>{
-    if(res.data.flag){
-      //设置编辑窗口属性，dialogFormVisible4Edit为true表示显示
-      this.dialogFormVisible4Edit = true;
-      //为模型数据设置值，基于VUE双向数据绑定回显到页面
-      this.formData = res.data.data;
-    }else{
-      this.$message.error("获取数据失败，请刷新当前页面");
-    }
-  });
-}
-```
-
-#### 6.1.3 发送请求
-
-在编辑窗口中修改完成后，点击确定按钮需要提交请求，所以需要为确定按钮绑定事件并提供处理函数handleEdit
-
-```
-<el-button type="primary" @click="handleEdit()">确定</el-button>
-
-//编辑
-handleEdit() {
-  //表单校验
-  this.$refs['dataEditForm'].validate((valid)=>{
-    if(valid){
-      //表单校验通过，发送请求
-      axios.post("/checkitem/edit.do",this.formData).then((response)=> {
-        //隐藏编辑窗口
-        this.dialogFormVisible4Edit = false;
-        if(response.data.flag){
-          //编辑成功，弹出成功提示信息
-          this.$message({
-            message: response.data.message,
-            type: 'success'
-          });
-        }else{
-          //编辑失败，弹出错误提示信息
-          this.$message.error(response.data.message);
-        }
-      }).finally(()=> {
-        //重新发送请求查询分页数据
-        this.findPage();
-      });
-    }else{
-      //表单校验失败
-      this.$message.error("表单数据校验失败");
-      return false;
-    }
-  });
-}
-```
-
-### 6.2 后台代码
-
-#### 6.2.1 Controller
-
-在CheckItemController中增加编辑方法
-
-```
-@RequestMapping("/findById")
-public Result findById(Integer id){
-    try{
-        CheckItem checkItem = checkItemService.findById(id);
-        return  new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS,checkItem);
-    }catch (Exception e){
-        e.printStackTrace();
-        //服务调用失败
-        return new Result(false, MessageConstant.QUERY_CHECKITEM_FAIL);
-    }
-}
-
-
-//编辑
-@RequestMapping("/edit")
-public Result edit(@RequestBody CheckItem checkItem){
-  try {
-    checkItemService.edit(checkItem);
-  }catch (Exception e){
-    return new Result(false,MessageConstant.EDIT_CHECKITEM_FAIL);
-  }
-  return new Result(true,MessageConstant.EDIT_CHECKITEM_SUCCESS);
-}
-
-```
-
-#### 6.2.2 服务接口
-
-在CheckItemService服务接口中扩展编辑方法
-
-```
-public CheckItem findById(Integer id);
-public void edit(CheckItem checkItem);
-```
-
-#### 6.2.3 服务实现类
-
-在CheckItemServiceImpl实现类中实现编辑方法
-
-```
-public CheckItem findById(Integer id) {
-    return checkItemDao.findById(id);
-}
-//编辑
-public void edit(CheckItem checkItem) {
-  checkItemDao.edit(checkItem);
-}
-```
-
-#### 6.2.4 Dao接口
-
-在CheckItemDao接口中扩展edit方法
-
-```
-public CheckItem findById(Integer id);
-public void edit(CheckItem checkItem);
-```
-
-#### 6.2.5 Mapper映射文件
-
-在CheckItemDao.xml中扩展SQL语句
-
-```
-<select id="findById" parameterType="int" resultType="com.bigdata.pojo.CheckItem">
-    select * from t_checkitem where id = #{id}
-</select>
-
-<!--编辑-->
-<update id="edit" parameterType="com.bigdata.pojo.CheckItem">
-  update t_checkitem
-  <set>
-    <if test="name != null">
-      name = #{name},
-    </if>
-    <if test="sex != null">
-      sex = #{sex},
-    </if>
-    <if test="code != null">
-      code = #{code},
-    </if>
-    <if test="age != null">
-      age = #{age},
-    </if>
-    <if test="price != null">
-      price = #{price},
-    </if>
-    <if test="type != null">
-      type = #{type},
-    </if>
-    <if test="attention != null">
-      attention = #{attention},
-    </if>
-    <if test="remark != null">
-      remark = #{remark},
-    </if>
-  </set>
-  where id = #{id}
-</update>
-
-```
-
- 
+1.  克隆仓库：使用 Git 克隆仓库或直接下载仓库压缩包到您的计算机
+
+2. 打开工程：使用 `IntelliJ IDEA`  打开克隆的仓库或解压的工程文件，而后使用 Maven 工具更新父工程依赖
+
+3. 创建数据库和表：登录 MySQL  创建 `health` 数据库，将 `health-provider/src/main/resources/sql/health.sql` 文件中的数据库表导入 health 数据库中
+
+4. 修改配置信息：
+
+   > 1. 修改 `health-provider/src/main/resources/jdbc.properties` 中的数据库用户名和密码信息 
+
+5. 启动 `ZooKeeper` 服务器：双击 zookeeper 安装目录下的 `ZKserver.cmd` 启动服务（默认监听 2181 端口）
+
+6. 部署访问：部署 Tomcat 启动 `health-provider`，而后再启动 `health-backend`
+
+# 二、项目概述
+
+## 2.1、项目介绍
+
+美年健康管理系统是一款应用于健康管理机构的业务系统，实现健康管理机构工作内容可视化、会员管理专业化、健康评估数字化、健康干预流程化、知识库集成化，从而提高健康管理师的工作效率，加强与会员间的互动，增强管理者对健康管理机构运营情况的了解。系统分为美年健康后台管理系统和移动端应用两部分。其中后台系统提供给健康管理机构内部人员（包括系统管理员、健康管理师等）使用，移动端应用提供给健康管理机构的用户（体检用户）使用。
+
+## 2.2、总体流程
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7a46aedc49094e5687f1f0be0e632d2a.png#pic_center)
+
+
+
+
+## 2.3、技术结构
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9f81eb944cb1485b944e11ad5aa468d0.png#pic_center)
+
+
+## 2.4、功能架构
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/8f0322443763497c8c06fb5559752234.png#pic_center)
+
+
+## 2.5、功能列表
+
+| 模块         | 子模块                       | 任务描述                 |                          |
+| :----------- | :--------------------------- | :----------------------- | :----------------------- |
+| 会员管理     | 会员档案                     | 新增会员                 | 新增会员信息             |
+| 会员查询     | 根据条件搜索会员             |                          |                          |
+| 编辑会员信息 | 修改会员信息                 |                          |                          |
+| 删除会员     | 删除会员                     |                          |                          |
+| 会员统计     | 本月预约量                   | 查看本月会员预约的数量   |                          |
+| 会员总量     | 查看总共会员的数量           |                          |                          |
+| 体检上传     | 上传体检报告                 | 体检报告上传             |                          |
+| 删除报告     | 删除体检报告                 |                          |                          |
+| 健康评估     | 体质测评                     | 新增评估                 | 根据患者情况填写评估问卷 |
+| 查看结果     | 查看评估报告                 |                          |                          |
+| 查询评估     | 通过条件查询评估信息         |                          |                          |
+| 心理测评     | 新增评估                     | 根据患者情况填写评估问卷 |                          |
+| 查看结果     | 查看评估报告                 |                          |                          |
+| 查询评估     | 通过条件查询评估信息         |                          |                          |
+| 风险测评     | 新增评估                     | 根据患者情况填写评估问卷 |                          |
+| 查看结果     | 查看评估报告                 |                          |                          |
+| 查询评估     | 通过条件查询评估信息         |                          |                          |
+| 知知识库识库 | 评估建议                     | 增删改查                 | 评估建议的增删改查       |
+| 健康方案     | 增删改查                     | 健康方案的增删改查       |                          |
+| 运动项目库   | 增删改查                     | 运动库的增删改查         |                          |
+| 膳食库       | 增删改查                     | 膳食库的增删改查         |                          |
+| 疾病库       | 增删改查                     | 疾病库的增删改查         |                          |
+| 体检预约     | 预约列表                     | 预约查询                 | 根据条件查询预约信息     |
+| 新增预约     | 新增预约信息                 |                          |                          |
+| 预约设置     | 日历预约                     | 根据日历排开诊时间       |                          |
+| 批量导入     | 导入开诊时间                 |                          |                          |
+| 取消预约     | 取消预约时间                 |                          |                          |
+| 检测项管理   | 增删改查                     | 检测项的增删改查         |                          |
+| 套餐管理     | 新增套餐                     | 新增套餐内容             |                          |
+| 修改套餐     | 修改套餐内容                 |                          |                          |
+| 查询套餐     | 查询套餐内容                 |                          |                          |
+| 健康干预     | 人群分类                     | 系统预分类               | 系统对人群进行预分类     |
+| 确认分类     | 健康管理师对人群进行分类确认 |                          |                          |
+| 干预方案     | 查询患者                     | 根据条件查询患者         |                          |
+| 制定干预方案 | 选择患者制定干预计划         |                          |                          |
+| 干预工作台   | 执行干预计划                 | 执行干预计划             |                          |
+| 查看干预计划 | 查看干预计划                 |                          |                          |
+| 修改干预计划 | 修改干预计划                 |                          |                          |
+| 方案模板     | 新增模板                     | 新增方案模板             |                          |
+| 查询方案     | 查询方案模板                 |                          |                          |
+| 系统设置     | 菜单管理                     | 增删改查                 | 菜单的增删改查           |
+| 权限设置     | 增删改查                     | 权限的增删改查           |                          |
+| 用户管理     | 增删改查                     | 用户的增删改查           |                          |
+| 题库管理     | 增删改查                     | 题库的增删改查           |                          |
+| 问卷管理     | 增删改查                     | 问卷的增删改查           |                          |
+
+## 2.6、产品结构
+
+1. 结构
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/af3c3aa52b1740efbe89024d0f0167bc.png#pic_center)
+
+
+2. 首页
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/3663aed8dd1e4d64abbbfe9c3532733a.png#pic_center)
+
+
+
+3. 会员管理
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/b00bd52e50524843b8c9d86d132d1feb.png#pic_center)
+
+
+4. 预约管理
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/745bc756dd75446097f4e3c521c3a178.png#pic_center)
+
+
+5. 健康评估
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/418e6afa3d604bd786c64d93c78868c8.png#pic_center)
+
+
+6. 健康干预
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/5842c1b232034de788f1c063d8752156.png#pic_center)
+
+
+
+
+
+# 三、系统设计
+
+## 3.1、项目结构
+![在这里插入图片描述](https://img-blog.csdnimg.cn/0ff09393d27d45bc8895ad4c74dcc5d3.png#pic_center)
+
+
+## 3.2、功能设计
+
+### 1. 会员管理
+
+会员管理主要是健康管理师管理患者的界面，患者来源包括直接到诊注册，预约用户，其中到诊注册用户为健康管理师直接添加患者信息；预约到诊用户为健康管理师完善信息。体检上传功能为患者上传体检报告，可以删除报告信息。会员统计用于统计本月预约量及全部预约量。
+
+1. 会员档案：显示所有患者信息，可以对患者进行增删改查
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/9ed75abd65c4449a8d223f630b515ecd.png#pic_center)
+
+
+2. 报告上传：显示已经预约的列表，可以上传患者的体检报告，到检的患者可以直接新增信息
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/065b5974ebd4484ea3f45e5c347af6ce.png#pic_center)
+
+
+### 2. 预约管理
+
+预约功能包含患者预约体检项目以及体检时间，健康管理师查看已预约患者并确认患者是否到诊。以及后台管理员维护预约项目、预约套餐数据。
+
+1. 预约列表：查看患者预约情况，对预约信息进行操作的页面
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/408c614e55ce48b49fc14d5f813fd9ff.png#pic_center)
+
+
+2. 检查项管理
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/bdc69db597e2422cb7ea816ecb2c8ef4.png#pic_center)
+
+
+### 3. 健康评估
+
+健康评估主要是帮助健康管理师对患者进行健康评估的方式，如果患者未做过评估，则健康管理师对患者进行现场评估；如果患者做过健康评估，则健康管理师查询患者信息查看患者评估结果。
+
+1. 风险评估：健康管理师对患者进行评估使用的列表，可以新增评估或查看患者评估结果
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/1b14b7c6baf5437ea2ab689030a165d8.png#pic_center)
+
+
+2. 指标管理：健康管理师给到诊患者进行健康评估，新建评估，完成问卷，查看评估结果。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/45f12146ea3545cdb6031959f928f8fb.png#pic_center)
+
+
+### 4. 健康干预
+
+健康管理师根据评估结果以及患者信息对患者进行健康干预，制定健康干预计划。
+
+1. 人群分类：患者通过评估进行预分类，健康管理师对患者信息查看，确认分类。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/1f1e889696894cafbcdcd892ac8fa5e7.png#pic_center)
+
+
+2. 干预模板：健康管理师提前维护干预模板，便于制定干预计划时使用。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/bdf0863f8bd546ccad46e95c386818ae.png#pic_center)
+
+
+3. 健康干预：健康管理师通过患者信息，制定健康干预计划。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/bfd1e74c0a9c4b8394270c924d62df08.png#pic_center)
+
+
+### 5. 知识库
+
+知识库为支持系统正常运行的必要部分，主要包含评估建议维护，健康方案维护，运动项目库维护，膳食库维护，疾病库维护，宣教内容维护。
+
+1. 评估建议：评估建议库为评估结果反馈，根据指标关联内容，显示健康建议。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/34c7bffda00c4288ba2f0b4c76d41a75.png#pic_center)
+
+
+2. 运动项目库：运动项目库为健康干预运动建议内容，健康管理师制定运动建议时，选择运动项。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/ad3165352f51439b857c83c2463a5c9b.png#pic_center)
+
+
+### 6. 统计分析
+
+统计分析主要是健康机构管理者对健康管理机构运营情况的查看。
+
+1. 工作量统计：工作量统计为显示健康管理师干预方案总量，干预回访量以及干预结束量。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/7f5f9bdaad384659b293267340d81925.png#pic_center)
+
+
+
+## 3.3、UI 设计
+
+### 1. 首页
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7599efa4a418461ea99a90fbb2fb7a9b.png#pic_center)
+
+
+
+
+### 2. 预约页面
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9eda871b3b524ef686bd1cdff80f3659.png#pic_center)
+
+
+### 3. 预约详情
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/c45b01c4ca44457bbc0c9e67879f4c19.png#pic_center)
+
+
+### 4. 编辑信息
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9981a7eb1dfc45b8814a4b1040c60a96.png#pic_center)
+
+
+### 5. 预约须知
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/d0d4fdbf94cc4cce968bbe749b13660a.png#pic_center)
+
+
+### 6. 报告查询
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/e3812c21d1e84849bddd12d306b5aa5c.png#pic_center)
+
+
+### 7. 登录页面
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/72cfbb88bd6d4bf499c71fff1044d026.png#pic_center)
+
+
+### 8. 体检报告
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/cbeefd33ea084711bb677e8325e7da8b.png#pic_center)
+
+
+### 9. 风险评估
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/791d4f9aab10416cbf28d929ecebf2c2.png#pic_center)
+
+
+### 10. 评估问卷
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/b109a8aec92049d2b2164abcd3af6990.png#pic_center)
+
+
+### 11. 干预方案
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/614b955b9c5140fd90333f062f4fb561.png#pic_center)
+
+
+### 12. 健康档案
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/05db108f44ee4b7aa45086bdbdb51ce5.png#pic_center)
+
+
+### 13. 档案详情
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/52fdb12439ff483f83b0e662364b456a.png#pic_center)
+
+
+### 14. 健康资讯
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7ceaf72e4d934490907b50e06495ea49.png#pic_center)
+
+
+### 15. 资讯详情
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/d9bc0680cded49c7a2dc89d20ace4672.png#pic_center)
+
