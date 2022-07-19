@@ -417,8 +417,21 @@
                 }).then(response => {
                     if (this.SUCCESS == response.data.code) {
                         var checkItemIds = response.data.resultMap.list;
-                        // TODO 选中已存在的检查项
                         this.checkitemIds = checkItemIds;
+
+                        // 改变tableData的顺序，优先显示选中的复选框
+                        this.tableData.sort((a, b)=>{
+                            for(var i in this.checkitemIds){
+                                console.log(this.checkitemIds[i])
+                                if(a.id == this.checkitemIds[i]){
+                                    return -1;
+                                }
+                                if(b.id == this.checkitemIds[i]){
+                                    return true;
+                                }
+                            }
+                            return true;
+                        })
                     }
                 })
                 // 打开编辑框
