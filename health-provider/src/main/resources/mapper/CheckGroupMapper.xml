@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.whut.binary.health.provider.mapper.CheckGroupMapper">
+    <!-- List<CheckGroup> getCheckGroupByCodeOrNameOrHelpCode(@Param("condition") String condition);-->
+    <select id="getCheckGroupByCodeOrNameOrHelpCode" resultType="checkGroup">
+        select *
+        from t_checkgroup
+        <where>
+            <if test="condition != null and condition != ''">name = #{condition} or code = #{condition} or helpCode = #{condition}</if>
+        </where>
+    </select>
+
+    <!-- int updateCheckGroupById(CheckGroup checkGroup); -->
+    <update id="updateCheckGroupById" parameterType="CheckGroup">
+        update t_checkgroup
+        <set>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="helpCode != null">
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

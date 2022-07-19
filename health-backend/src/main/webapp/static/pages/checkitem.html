@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <!-- 页面meta -->
+    <!-- 页面 meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>美年健康</title>
@@ -15,6 +15,7 @@
 </head>
 <body class="hold-transition">
 <div id="app">
+    <!-- 标题栏 -->
     <div class="content-header">
         <h1>预约管理<small>检查项管理</small></h1>
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
@@ -23,8 +24,10 @@
             <el-breadcrumb-item>检查项管理</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
+
     <div class="app-container">
         <div class="box">
+            <!-- 搜索框 -->
             <div class="filter-container">
                 <el-button icon="el-icon-refresh" circle @click="findAll()"></el-button>
                 <el-input placeholder="项目编码/项目名称" v-model="pagination.condition" style="width: 200px;"
@@ -32,6 +35,8 @@
                 <el-button @click="findByNameOrCode()" class="dalfBut" icon="el-icon-search">查询</el-button>
                 <el-button type="primary" class="butT" icon="el-icon-plus" @click="handleCreate()">新建</el-button>
             </div>
+
+            <!-- 数据显示表格 -->
             <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                 <el-table-column type="index" align="center" label="序号"></el-table-column>
                 <el-table-column prop="code" label="项目编码" align="center"></el-table-column>
@@ -52,6 +57,8 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页条 -->
             <div class="pagination-container">
                 <el-pagination
                         class="pagiantion"
@@ -276,27 +283,34 @@
                     });
                 }
             },
+
             // 新增
             handleAdd() {
                 // 校验
                 this.$refs['dataAddForm'].validate((valid) => {
                     if (valid) {
-                        axios.post("/checkItem.do", this.formData).then(response => {
+                        axios({
+                            url: "/checkItem.do",
+                            method: "post",
+                            data: this.formData,
+                        }).then(response => {
                             if (this.SUCCESS == response.data.code) {
                                 this.dialogFormVisible = false;
                             }
                             this.showNotice(response.data.code, response.data.msg);
                         }).finally(() => {
+                            // 回显已添加的数据
                             this.pagination.currentPage = 1;
                             this.pagination.condition = this.formData.code;
                             this.findPage();
-                        });
+                        })
                     } else {
                         this.$message.error("表单数据校验失败！");
                         return false;
                     }
                 });
             },
+
             // 分页查询
             findPage() {
                 axios({
@@ -317,31 +331,37 @@
                     }
                 })
             },
+
             // 根据条件查询
             findByNameOrCode() {
                 this.pagination.currentPage = 1;
                 this.findPage();
             },
+
             // 所有数据
             findAll() {
                 this.pagination.currentPage = 1;
                 this.pagination.condition = "";
                 this.findPage();
             },
+
             // 重置表单
             resetForm() {
                 this.formData = {};
             },
+
             // 弹出添加窗口
             handleCreate() {
                 this.resetForm();
                 this.dialogFormVisible = true;
             },
+
             // 切换页码
             handleCurrentChange(currentPage) {
                 this.pagination.currentPage = currentPage;
                 this.findPage();
             },
+
             // 删除
             handleDelete(row) {
                 this.$confirm('确定要删除项目编码为【' + row.code + '】的检查项吗？', '删除提示', {
@@ -353,21 +373,10 @@
                     axios({
                         method: "post",
                         url: "/checkItem.do",
-                        data: {
+                        params: {
                             "_method": "delete",
                             "checkItemId": row.id
                         },
-                        transformRequest: [function (data) {
-                            // Do whatever you want to transform the data
-                            let ret = '';
-                            for (let it in data) {
-                                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-                            }
-                            return ret;
-                        }],
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
                     }).then(response => {
                         this.showNotice(response.data.code, response.data.msg);
                     }).finally(() => {
@@ -376,6 +385,7 @@
                 }).catch(() => {
                 });
             },
+
             // 弹出编辑窗口
             handleUpdate(row) {
                 this.resetForm();
@@ -388,12 +398,13 @@
                         // 打开编辑框
                         this.dialogFormVisible4Edit = true;
                         // 为模型数据设置值，基于 VUE 双向数据绑定回显到页面
-                        this.formData = response.data.resultMap.checkItem;
+                        this.formData = response.data.resultMap.item;
                     } else {
                         this.showNotice(response.data.code, response.data.msg);
                     }
                 })
             },
+
             // 编辑
             handleEdit() {
                 // 表单校验
@@ -403,18 +414,8 @@
                             method: "post",
                             url: "/checkItem.do",
                             data: this.formData,
-                            transformRequest: [function (data) {
-                                // Do whatever you want to transform the data
-                                let ret = '';
-                                for (let it in data) {
-                                    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-                                }
-                                ret += "_method=put";
-                                console.log(ret);
-                                return ret;
-                            }],
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
+                            params: {
+                                "_method": "put"
                             }
                         }).then(response => {
                             if (this.SUCCESS == response.data.code) {

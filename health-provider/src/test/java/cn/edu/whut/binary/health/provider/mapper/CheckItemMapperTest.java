@@ -28,7 +28,7 @@ public class CheckItemMapperTest {
 
     @Test
     public void getCheckItemByCodeOrName() {
-        List<CheckItem> checkItemList = checkItemMapper.getCheckItemByCodeOrName(null);
+        List<CheckItem> checkItemList = checkItemMapper.getCheckItemByCodeOrName("0053");
         checkItemList.forEach(System.out::println);
     }
 

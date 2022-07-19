@@ -9,6 +9,8 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 /**
  * @author Spring-_-Bear
@@ -28,13 +30,11 @@ public class CheckItemController {
     }
 
     @GetMapping("/checkItem.do")
-    public Response getCheckItemPageData(PageQueryBean pageQueryBean) {
-        if (pageQueryBean == null) {
-            return Response.warn(MessageConstant.PARAMETERS_NEEDED);
-        }
+    public Response getCheckItemPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
+        PageQueryBean pageQueryBean = new PageQueryBean(currentPage, pageSize, condition);
         PageInfo<CheckItem> checkItemPageData = checkItemService.getCheckItemPageData(pageQueryBean);
         if (checkItemPageData == null || checkItemPageData.getList() == null || checkItemPageData.getList().size() == 0) {
-            return Response.info(MessageConstant.QUERY_CHECK_ITEM_NO_DATA);
+            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
         }
         return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("pageData", checkItemPageData);
     }
@@ -56,13 +56,13 @@ public class CheckItemController {
     public Response getOneCheckItem(@PathVariable("checkItemId") Integer checkItemId) {
         CheckItem checkItem = checkItemService.getCheckItemById(checkItemId);
         if (checkItem == null) {
-            return Response.info(MessageConstant.QUERY_CHECK_ITEM_NO_DATA);
+            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
         }
-        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("checkItem", checkItem);
+        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("item", checkItem);
     }
 
     @PutMapping("/checkItem.do")
-    public Response updateCheckItem(CheckItem checkItem) {
+    public Response updateCheckItem(@RequestBody CheckItem checkItem) {
         if (checkItem.getId() == null) {
             return Response.warn(MessageConstant.PARAMETERS_NEEDED);
         }
@@ -70,5 +70,14 @@ public class CheckItemController {
             return Response.success(MessageConstant.EDIT_CHECK_ITEM_SUCCESS);
         }
         return Response.error(MessageConstant.EDIT_CHECK_ITEM_FAIL);
+    }
+
+    @GetMapping("/checkItem/all.do")
+    public Response getAllCheckItems() {
+        List<CheckItem> checkItemList = checkItemService.getAllCheckItems();
+        if (checkItemList == null || checkItemList.size() == 0) {
+            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("list", checkItemList);
     }
 }

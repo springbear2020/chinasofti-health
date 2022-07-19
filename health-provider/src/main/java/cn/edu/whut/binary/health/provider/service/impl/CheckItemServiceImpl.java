@@ -52,4 +52,9 @@ public class CheckItemServiceImpl implements CheckItemService {
     public boolean updateCheckItemById(CheckItem checkItem) {
         return checkItemMapper.updateCheckItemById(checkItem) == 1;
     }
+
+    @Override
+    public List<CheckItem> getAllCheckItems() {
+        return checkItemMapper.getAllCheckItems();
+    }
 }

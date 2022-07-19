@@ -8,7 +8,7 @@
         select *
         from t_checkitem
         <where>
-            <if test="condition != null and condition != ''">and name = #{condition} or code = #{condition}</if>
+            <if test="condition != null and condition != ''">name = #{condition} or code = #{condition}</if>
         </where>
     </select>
 

@@ -4,6 +4,8 @@ import cn.edu.whut.binary.health.common.entity.PageQueryBean;
 import cn.edu.whut.binary.health.common.pojo.CheckItem;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * @author Spring-_-Bear
  * @datetime 2022-07-16 17:40 Saturday
@@ -37,4 +39,9 @@ public interface CheckItemService {
      * 根据 ID 更新检查项
      */
     boolean updateCheckItemById(CheckItem checkItem);
+
+    /**
+     * 查询所有检查项
+     */
+    List<CheckItem> getAllCheckItems();
 }

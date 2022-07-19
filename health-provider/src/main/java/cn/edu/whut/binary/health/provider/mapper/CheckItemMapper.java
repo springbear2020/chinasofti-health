@@ -59,4 +59,10 @@ public interface CheckItemMapper {
      * @return 1 - 更新成功
      */
     int updateCheckItemById(CheckItem checkItem);
+
+    /**
+     * 查询所有检查项
+     */
+    @Select("select * from t_checkitem")
+    List<CheckItem> getAllCheckItems();
 }

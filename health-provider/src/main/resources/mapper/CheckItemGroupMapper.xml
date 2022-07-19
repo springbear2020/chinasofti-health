@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper">
+    <!-- int saveCheckItemIdListBatch(@Param("checkGroupId") Integer checkGroupId, List<Integer> checkItemIdList); -->
+    <insert id="saveCheckItemIdListBatch">
+        insert into t_checkgroup_checkitem (checkgroup_id, checkitem_id) VALUES
+        <foreach collection="checkItemIdList" separator="," item="checkItemId">
+            (#{checkGroupId},#{checkItemId})
+        </foreach>
+    </insert>
+</mapper>
