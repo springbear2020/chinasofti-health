@@ -63,15 +63,15 @@ public class CheckItemController {
 
     @PutMapping("/checkItem.do")
     public Response updateCheckItem(@RequestBody CheckItem checkItem) {
-        if (checkItem.getId() == null) {
-            return Response.warn(MessageConstant.PARAMETERS_NEEDED);
-        }
         if (checkItemService.updateCheckItemById(checkItem)) {
             return Response.success(MessageConstant.EDIT_CHECK_ITEM_SUCCESS);
         }
         return Response.error(MessageConstant.EDIT_CHECK_ITEM_FAIL);
     }
 
+    /**
+     * 获取所有的检查项信息，提供给检查组新增、编辑时使用
+     */
     @GetMapping("/checkItem/all.do")
     public Response getAllCheckItems() {
         List<CheckItem> checkItemList = checkItemService.getAllCheckItems();

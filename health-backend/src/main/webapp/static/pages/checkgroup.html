@@ -422,7 +422,6 @@
                         // 改变tableData的顺序，优先显示选中的复选框
                         this.tableData.sort((a, b) => {
                             for (var i in this.checkitemIds) {
-                                console.log(this.checkitemIds[i])
                                 if (a.id == this.checkitemIds[i]) {
                                     return -1;
                                 }

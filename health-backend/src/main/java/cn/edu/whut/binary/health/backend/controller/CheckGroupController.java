@@ -71,13 +71,9 @@ public class CheckGroupController {
      */
     @PutMapping("/checkGroup.do")
     public Response updateCheckGroup(CheckGroup checkGroup, @RequestBody Integer[] checkItemIds) {
-        if (checkGroup.getId() == null) {
-            return Response.warn(MessageConstant.PARAMETERS_NEEDED);
-        }
         if (checkGroupService.updateCheckGroup(checkGroup, Arrays.asList(checkItemIds))) {
             return Response.success(MessageConstant.EDIT_CHECK_GROUP_SUCCESS);
         }
         return Response.error(MessageConstant.EDIT_CHECK_GROUP_FAIL);
     }
 }
-

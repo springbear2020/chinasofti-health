@@ -6,6 +6,7 @@ import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.provider.mapper.CheckGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class CheckGroupServiceImpl implements CheckGroupService {
 
     @Override
     public PageInfo<CheckGroup> getCheckGroupPageData(PageQueryBean pageQueryBean) {
-        PageHelper.startPage(pageQueryBean.getCurrentPage(), pageQueryBean.getPageSize());
+        Page<Object> startPage = PageHelper.startPage(pageQueryBean.getCurrentPage(), pageQueryBean.getPageSize());
         List<CheckGroup> CheckGroupList = checkGroupMapper.getCheckGroupByCodeOrNameOrHelpCode(pageQueryBean.getCondition());
         return new PageInfo<>(CheckGroupList, PageQueryBean.PAGE_NUMS);
     }

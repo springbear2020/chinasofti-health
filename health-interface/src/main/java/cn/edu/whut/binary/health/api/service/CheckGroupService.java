@@ -41,7 +41,7 @@ public interface CheckGroupService {
     List<Integer> getCheckItemIdsOfCheckGroup(Integer checkGroupId);
 
     /**
-     * 更新检查组信息，并更新检查组所对应的检查项关系
+     * 更新检查组信息，并更新检查组所对应的检查项
      *
      * @param checkGroup      新的检查组信息
      * @param checkItemIdList 新检查组所对应的新检查项的 ID 集合
