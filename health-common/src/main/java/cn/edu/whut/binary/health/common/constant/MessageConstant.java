@@ -58,6 +58,12 @@ public class MessageConstant {
     public static final String GET_SETMEAL_COUNT_REPORT_FAIL = "获取套餐统计数据失败";
     public static final String GET_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
     public static final String GET_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
+    public static final String DELETE_SETMEAL_SUCCESS = "删除套餐成功";
+    public static final String DELETE_SETMEAL_FAIL = "删除套餐失败";
+    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL = "查询套餐对应的检查组失败";
+    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS = "查询套餐对应的检查组成功";
+    public static final String UPDATE_SET_MEAL_SUCCESS = "更新套餐成功";
+    public static final String UPDATE_SET_MEAL_FAIL = "更新套餐失败";
 
     /* ------------------------------------- 预约 ------------------------------------- */
     public static final String QUERY_ORDER_SUCCESS = "查询预约信息成功";

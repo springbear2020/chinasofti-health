@@ -76,4 +76,16 @@ public class CheckGroupController {
         }
         return Response.error(MessageConstant.EDIT_CHECK_GROUP_FAIL);
     }
+
+    /**
+     * 获取所有的检查组信息，提供给套餐新增、编辑时使用
+     */
+    @GetMapping("/checkGroup/all.do")
+    public Response getAllCheckGroups() {
+        List<CheckGroup> checkGroupList = checkGroupService.getAllCheckGroups();
+        if (checkGroupList == null || checkGroupList.size() == 0) {
+            return Response.info(MessageConstant.QUERY_CHECK_GROUP_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_CHECK_GROUP_SUCCESS).put("list", checkGroupList);
+    }
 }

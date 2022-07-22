@@ -24,11 +24,9 @@ public interface CheckItemGroupMapper {
 
     /**
      * 删除检查组所对应的检查项
-     *
-     * @return 删除的数据行数
      */
     @Delete("delete from t_checkgroup_checkitem where checkgroup_id = #{checkGroupId}")
-    int deleteCheckItemsOfCheckGroup(@Param("checkGroupId") Integer checkGroupId);
+    void deleteCheckItemsOfCheckGroup(@Param("checkGroupId") Integer checkGroupId);
 
     /**
      * 根据检查组 ID 查询其对应的检查项信息（一个检查组对应多个检查项）

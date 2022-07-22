@@ -7,7 +7,7 @@ import java.util.List;
  * @author Spring-_-Bear
  * @datetime 2022-07-16 16:53 Saturday
  */
-public class Setmeal implements Serializable {
+public class SetMeal implements Serializable {
     private static final long serialVersionUID = -6265424093185956918L;
 
     private Integer id;
@@ -52,10 +52,10 @@ public class Setmeal implements Serializable {
         this.checkGroups = checkGroups;
     }
 
-    public Setmeal() {
+    public SetMeal() {
     }
 
-    public Setmeal(Integer id, String name, String code, String helpCode, String sex, String age, Float price, String remark, String attention, String img) {
+    public SetMeal(Integer id, String name, String code, String helpCode, String sex, String age, Float price, String remark, String attention, String img) {
         this.id = id;
         this.name = name;
         this.code = code;

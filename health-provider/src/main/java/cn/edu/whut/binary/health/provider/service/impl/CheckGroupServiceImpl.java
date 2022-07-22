@@ -39,7 +39,7 @@ public class CheckGroupServiceImpl implements CheckGroupService {
             // 批量保存检查组对应的检查项（一个检查组对应多个检查项）
             return checkItemGroupMapper.saveCheckItemIdListBatch(checkGroupId, checkItemIdList) > 0;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -71,6 +71,11 @@ public class CheckGroupServiceImpl implements CheckGroupService {
         if (checkItemIdList != null && checkItemIdList.size() > 0) {
             return checkItemGroupMapper.saveCheckItemIdListBatch(checkGroup.getId(), checkItemIdList) > 0;
         }
-        return true;
+        return false;
+    }
+
+    @Override
+    public List<CheckGroup> getAllCheckGroups() {
+        return checkGroupMapper.getAllCheckGroups();
     }
 }

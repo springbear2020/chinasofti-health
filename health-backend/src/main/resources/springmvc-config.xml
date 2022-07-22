@@ -27,4 +27,7 @@
 
     <!-- Dubbo -->
     <import resource="dubbo-customer.xml"/>
+
+    <!-- File upload -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 </beans>

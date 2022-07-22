@@ -48,4 +48,9 @@ public interface CheckGroupService {
      * @return true - 更新成功
      */
     boolean updateCheckGroup(CheckGroup checkGroup, List<Integer> checkItemIdList);
+
+    /**
+     * 查询所有检查组
+     */
+    List<CheckGroup> getAllCheckGroups();
 }

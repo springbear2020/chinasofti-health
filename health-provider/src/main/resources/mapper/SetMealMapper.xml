@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.whut.binary.health.provider.mapper.SetMealMapper">
+    <!-- List<SetMeal> getSetMealByCodeOrNameOrHelpCode(@Param("condition") String condition);-->
+    <select id="getSetMealByCodeOrNameOrHelpCode" resultType="setMeal">
+        select *
+        from t_setmeal
+        <where>
+            <if test="condition != null and condition != ''">name = #{condition} or code = #{condition} or helpCode = #{condition}</if>
+        </where>
+    </select>
+
+    <!-- int updateSetMealById(SetMeal setMeal); -->
+    <update id="updateSetMealById" parameterType="setMeal">
+        update t_setmeal
+        <set>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="helpCode != null">
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="img != null">
+                img = #{img},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

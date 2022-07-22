@@ -41,4 +41,10 @@ public interface CheckGroupMapper {
      * @return 1 - 更新成功
      */
     int updateCheckGroupById(CheckGroup checkGroup);
+
+    /**
+     * 查询所有检查组
+     */
+    @Select("select * from t_checkgroup")
+    List<CheckGroup> getAllCheckGroups();
 }
