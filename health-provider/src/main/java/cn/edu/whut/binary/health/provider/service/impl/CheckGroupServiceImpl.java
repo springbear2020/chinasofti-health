@@ -1,12 +1,12 @@
 package cn.edu.whut.binary.health.provider.service.impl;
 
 import cn.edu.whut.binary.health.api.service.CheckGroupService;
+import cn.edu.whut.binary.health.common.constant.MessageConstant;
 import cn.edu.whut.binary.health.common.entity.PageQueryBean;
 import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.provider.mapper.CheckGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper;
 import com.alibaba.dubbo.config.annotation.Service;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +44,17 @@ public class CheckGroupServiceImpl implements CheckGroupService {
 
     @Override
     public PageInfo<CheckGroup> getCheckGroupPageData(PageQueryBean pageQueryBean) {
-        Page<Object> startPage = PageHelper.startPage(pageQueryBean.getCurrentPage(), pageQueryBean.getPageSize());
+        PageHelper.startPage(pageQueryBean.getCurrentPage(), pageQueryBean.getPageSize());
         List<CheckGroup> CheckGroupList = checkGroupMapper.getCheckGroupByCodeOrNameOrHelpCode(pageQueryBean.getCondition());
         return new PageInfo<>(CheckGroupList, PageQueryBean.PAGE_NUMS);
     }
 
     @Override
     public boolean deleteCheckGroupById(Integer checkGroupId) {
+        // 检查当前检查组与套餐的关联关系，若存在关联则当前检查组不能删除
+        if (checkGroupMapper.getCheckGroupNumsOfSetMeal(checkGroupId) > 0) {
+            throw new RuntimeException(MessageConstant.CHECK_GROUP_SET_MEAL_RELATION_EXISTS);
+        }
         return checkGroupMapper.deleteCheckGroupId(checkGroupId) == 1;
     }
 

@@ -483,14 +483,13 @@
             // 重置表单
             resetForm() {
                 this.formData = {};
-                this.tableData = {};
                 this.checkgroupIds = [];
+                this.imageUrl = null;
             },
 
             // 弹出添加窗口
             handleCreate() {
                 this.resetForm();
-                this.dialogFormVisible = true;
                 // 查询所有检查组信息
                 axios.get("/checkGroup/all.do").then(response => {
                     if (this.SUCCESS == response.data.code) {
@@ -499,6 +498,7 @@
                         this.showNotice(response.data.code, response.data.msg);
                     }
                 })
+                this.dialogFormVisible = true;
             },
 
             // 切换页码
@@ -532,6 +532,9 @@
                     }).then(response => {
                         this.showNotice(response.data.code, response.data.msg);
                     }).finally(() => {
+                        if (this.dataList.length <= 1) {
+                            this.pagination.currentPage = this.pagination.currentPage - 1;
+                        }
                         this.findPage();
                     })
                 }).catch(() => {
@@ -541,37 +544,37 @@
             // 打开编辑窗口
             handleEdit(row) {
                 this.resetForm();
-                this.dialogFormVisibleEdit = true;
                 this.formData = row;
+                console.log(row);
+                this.imageUrl = row.img;
+                this.dialogFormVisibleEdit = true;
                 // 查询所有检查组信息
                 axios.get("/checkGroup/all.do").then(response => {
                     if (this.SUCCESS == response.data.code) {
                         this.tableData = response.data.resultMap.list;
-                        // 请求服务器查询当前套餐所对应的检查组信息
-                        axios({
-                            method: "get",
-                            url: "/setMeal/" + row.id + ".do"
-                        }).then(response => {
-                            if (this.SUCCESS == response.data.code) {
-                                var checkItemIds = response.data.resultMap.list;
-                                this.checkgroupIds = checkItemIds;
-
-                                // 改变 tableData 的顺序，优先显示选中的复选框
-                                this.tableData.sort((a, b) => {
-                                    for (var i in this.checkgroupIds) {
-                                        if (a.id == this.checkgroupIds[i]) {
-                                            return -1;
-                                        }
-                                        if (b.id == this.checkgroupIds[i]) {
-                                            return true;
-                                        }
-                                    }
-                                    return true;
-                                })
-                            }
-                        })
                     } else {
                         this.showNotice(response.data.code, response.data.msg);
+                    }
+                })
+                // 请求服务器查询当前套餐所对应的检查组信息
+                axios({
+                    method: "get",
+                    url: "/setMeal/" + row.id + ".do"
+                }).then(response => {
+                    if (this.SUCCESS == response.data.code) {
+                        this.checkgroupIds = response.data.resultMap.list;
+                        // 改变 tableData 的顺序，优先显示选中的复选框
+                        this.tableData.sort((a, b) => {
+                            for (var i in this.checkgroupIds) {
+                                if (a.id == this.checkgroupIds[i]) {
+                                    return -1;
+                                }
+                                if (b.id == this.checkgroupIds[i]) {
+                                    return true;
+                                }
+                            }
+                            return true;
+                        })
                     }
                 })
             },
@@ -579,6 +582,7 @@
             // 更新套餐
             handleUpdate() {
                 this.formData._method = "put";
+                this.formData.img = this.imageUrl;
                 axios({
                     method: "post",
                     url: "/setMeal.do",

@@ -47,4 +47,12 @@ public interface CheckGroupMapper {
      */
     @Select("select * from t_checkgroup")
     List<CheckGroup> getAllCheckGroups();
+
+    /**
+     * 根据检查组 ID 查询其对应的套餐数量
+     *
+     * @return 当前检查组关联的套餐的数量
+     */
+    @Select("select count(*) from t_setmeal_checkgroup where checkgroup_id = #{checkGroupId}")
+    int getCheckGroupNumsOfSetMeal(@Param("checkGroupId") Integer checkGroupId);
 }

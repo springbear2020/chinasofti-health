@@ -4,7 +4,6 @@ import cn.edu.whut.binary.health.api.service.SetMealService;
 import cn.edu.whut.binary.health.common.constant.MessageConstant;
 import cn.edu.whut.binary.health.common.entity.PageQueryBean;
 import cn.edu.whut.binary.health.common.entity.Response;
-import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.common.pojo.SetMeal;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
@@ -24,12 +23,11 @@ public class SetMealController {
 
     @GetMapping("/setMeal.do")
     public Response getSetMealPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
-        PageQueryBean pageQueryBean = new PageQueryBean(currentPage, pageSize, condition);
-        PageInfo<SetMeal> setMealPageData = setMealService.getSetMealPageData(pageQueryBean);
+        PageInfo<SetMeal> setMealPageData = setMealService.getSetMealPageData(new PageQueryBean(currentPage, pageSize, condition));
         if (setMealPageData == null || setMealPageData.getList() == null || setMealPageData.getList().size() == 0) {
             return Response.info(MessageConstant.QUERY_SETMEAL_FAIL);
         }
-        return Response.success(MessageConstant.QUERY_CHECK_GROUP_SUCCESS).put("pageData", setMealPageData);
+        return Response.success(MessageConstant.QUERY_SETMEAL_SUCCESS).put("pageData", setMealPageData);
     }
 
     /**
@@ -72,8 +70,8 @@ public class SetMealController {
     @PutMapping("/setMeal.do")
     public Response updateSetMeal(SetMeal setMeal, @RequestBody Integer[] checkGroupIds) {
         if (setMealService.updateSetMeal(setMeal, Arrays.asList(checkGroupIds))) {
-            return Response.success(MessageConstant.EDIT_CHECK_GROUP_SUCCESS);
+            return Response.success(MessageConstant.UPDATE_SET_MEAL_SUCCESS);
         }
-        return Response.error(MessageConstant.EDIT_CHECK_GROUP_FAIL);
+        return Response.error(MessageConstant.UPDATE_SET_MEAL_FAIL);
     }
 }

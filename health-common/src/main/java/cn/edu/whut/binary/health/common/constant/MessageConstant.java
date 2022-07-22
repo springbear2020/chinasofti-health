@@ -6,6 +6,7 @@ package cn.edu.whut.binary.health.common.constant;
  */
 public class MessageConstant {
     public static final String CHECK_ITEM_GROUP_RELATION_EXISTS = "检查项与检查组存在关联，不能删除";
+    public static final String CHECK_GROUP_SET_MEAL_RELATION_EXISTS = "检查组与套餐存在关联，不能删除";
 
     /* ------------------------------------- 检查项 ------------------------------------- */
     public static final String ADD_CHECK_ITEM_SUCCESS = "新增检查项成功";
@@ -29,6 +30,26 @@ public class MessageConstant {
     public static final String QUERY_CHECK_ITEM_OF_GROUP_SUCCESS = "查询检查组对应的检查项成功";
     public static final String QUERY_CHECK_ITEM_OF_GROUP_FAIL = "查询检查组对应的检查项失败";
 
+    /* ------------------------------------- 套餐 ------------------------------------- */
+    public static final String ADD_SETMEAL_FAIL = "新增套餐失败";
+    public static final String ADD_SETMEAL_SUCCESS = "新增套餐成功";
+    public static final String DELETE_SETMEAL_SUCCESS = "删除套餐成功";
+    public static final String DELETE_SETMEAL_FAIL = "删除套餐失败";
+    public static final String UPDATE_SET_MEAL_SUCCESS = "更新套餐成功";
+    public static final String UPDATE_SET_MEAL_FAIL = "更新套餐失败";
+    public static final String QUERY_SETMEAL_SUCCESS = "查询套餐数据成功";
+    public static final String QUERY_SETMEAL_FAIL = "查询套餐数据失败";
+    public static final String QUERY_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
+    public static final String QUERY_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
+    public static final String GET_SETMEAL_COUNT_REPORT_SUCCESS = "获取套餐统计数据成功";
+    public static final String GET_SETMEAL_COUNT_REPORT_FAIL = "获取套餐统计数据失败";
+    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL = "查询套餐对应的检查组失败";
+    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS = "查询套餐对应的检查组成功";
+
+    /* ------------------------------------- 图片 ------------------------------------- */
+    public static final String PIC_UPLOAD_SUCCESS = "图片上传成功";
+    public static final String PIC_UPLOAD_FAIL = "图片上传失败";
+
     /* ------------------------------------- 预约 ------------------------------------- */
     public static final String IMPORT_ORDER_SETTING_FAIL = "批量导入预约设置数据失败";
     public static final String IMPORT_ORDER_SETTING_SUCCESS = "批量导入预约设置数据成功";
@@ -46,24 +67,6 @@ public class MessageConstant {
     public static final String EDIT_MEMBER_SUCCESS = "编辑会员成功";
     public static final String GET_MEMBER_NUMBER_REPORT_SUCCESS = "获取会员统计数据成功";
     public static final String GET_MEMBER_NUMBER_REPORT_FAIL = "获取会员统计数据失败";
-
-    /* ------------------------------------- 套餐 ------------------------------------- */
-    public static final String ADD_SETMEAL_FAIL = "新增套餐失败";
-    public static final String ADD_SETMEAL_SUCCESS = "新增套餐成功";
-    public static final String QUERY_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
-    public static final String QUERY_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
-    public static final String QUERY_SETMEAL_SUCCESS = "查询套餐数据成功";
-    public static final String QUERY_SETMEAL_FAIL = "查询套餐数据失败";
-    public static final String GET_SETMEAL_COUNT_REPORT_SUCCESS = "获取套餐统计数据成功";
-    public static final String GET_SETMEAL_COUNT_REPORT_FAIL = "获取套餐统计数据失败";
-    public static final String GET_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
-    public static final String GET_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
-    public static final String DELETE_SETMEAL_SUCCESS = "删除套餐成功";
-    public static final String DELETE_SETMEAL_FAIL = "删除套餐失败";
-    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL = "查询套餐对应的检查组失败";
-    public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS = "查询套餐对应的检查组成功";
-    public static final String UPDATE_SET_MEAL_SUCCESS = "更新套餐成功";
-    public static final String UPDATE_SET_MEAL_FAIL = "更新套餐失败";
 
     /* ------------------------------------- 预约 ------------------------------------- */
     public static final String QUERY_ORDER_SUCCESS = "查询预约信息成功";
@@ -86,11 +89,6 @@ public class MessageConstant {
     public static final String SEND_VALIDATE_CODE_FAIL = "验证码发送失败";
     public static final String SEND_VALIDATE_CODE_SUCCESS = "验证码发送成功";
     public static final String TELEPHONE_VALIDATE_CODE_NOTNULL = "手机号和验证码都不能为空";
-
-    /* ------------------------------------- 文件 ------------------------------------- */
-    public static final String UPLOAD_SUCCESS = "上传成功";
-    public static final String PIC_UPLOAD_SUCCESS = "图片上传成功";
-    public static final String PIC_UPLOAD_FAIL = "图片上传失败";
 
     /* ------------------------------------- 运营 ------------------------------------- */
     public static final String GET_BUSINESS_REPORT_SUCCESS = "获取运营统计数据成功";

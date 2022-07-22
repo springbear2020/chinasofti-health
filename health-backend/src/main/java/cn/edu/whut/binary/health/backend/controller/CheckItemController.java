@@ -31,8 +31,7 @@ public class CheckItemController {
 
     @GetMapping("/checkItem.do")
     public Response getCheckItemPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
-        PageQueryBean pageQueryBean = new PageQueryBean(currentPage, pageSize, condition);
-        PageInfo<CheckItem> checkItemPageData = checkItemService.getCheckItemPageData(pageQueryBean);
+        PageInfo<CheckItem> checkItemPageData = checkItemService.getCheckItemPageData(new PageQueryBean(currentPage, pageSize, condition));
         if (checkItemPageData == null || checkItemPageData.getList() == null || checkItemPageData.getList().size() == 0) {
             return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
         }

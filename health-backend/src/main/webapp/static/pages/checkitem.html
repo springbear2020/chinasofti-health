@@ -380,6 +380,10 @@
                     }).then(response => {
                         this.showNotice(response.data.code, response.data.msg);
                     }).finally(() => {
+                        console.log(this.dataList);
+                        if (this.dataList.length <= 1) {
+                            this.pagination.currentPage = this.pagination.currentPage - 1;
+                        }
                         this.findPage();
                     })
                 }).catch(() => {

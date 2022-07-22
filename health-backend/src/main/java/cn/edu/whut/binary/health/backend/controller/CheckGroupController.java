@@ -35,8 +35,7 @@ public class CheckGroupController {
 
     @GetMapping("/checkGroup.do")
     public Response getCheckGroupPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
-        PageQueryBean pageQueryBean = new PageQueryBean(currentPage, pageSize, condition);
-        PageInfo<CheckGroup> checkGroupPageData = checkGroupService.getCheckGroupPageData(pageQueryBean);
+        PageInfo<CheckGroup> checkGroupPageData = checkGroupService.getCheckGroupPageData(new PageQueryBean(currentPage, pageSize, condition));
         if (checkGroupPageData == null || checkGroupPageData.getList() == null || checkGroupPageData.getList().size() == 0) {
             return Response.info(MessageConstant.QUERY_CHECK_GROUP_FAIL);
         }
@@ -45,8 +44,13 @@ public class CheckGroupController {
 
     @DeleteMapping("/checkGroup.do")
     public Response deleteCheckGroup(@RequestParam Integer checkGroupId) {
-        if (checkGroupService.deleteCheckGroupById(checkGroupId)) {
-            return Response.success(MessageConstant.DELETE_CHECK_GROUP_SUCCESS);
+        try {
+            if (checkGroupService.deleteCheckGroupById(checkGroupId)) {
+                return Response.success(MessageConstant.DELETE_CHECK_GROUP_SUCCESS);
+            }
+        } catch (RuntimeException e) {
+            // 检查组与套餐存在管理，不能删除
+            return Response.error(e.getMessage());
         }
         return Response.error(MessageConstant.DELETE_CHECK_GROUP_FAIL);
     }
