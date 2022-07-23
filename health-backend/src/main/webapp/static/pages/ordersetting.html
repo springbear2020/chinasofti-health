@@ -273,6 +273,16 @@
                 axios.get("/orderSetting/" + dateStr + ".do").then(response => {
                     if (this.SUCCESS == response.data.code) {
                         var orderSettingList = response.data.resultMap.list;
+                        this.leftobj = [];
+                        var tempDate;
+                        for(var i in orderSettingList){
+                            // 将后台传来的 Date 数据转化为 js 的 Date 类型
+                            tempDate = new Date(orderSettingList[i].orderDate);
+                            this.leftobj[i] = {};
+                            this.leftobj[i].date = tempDate.getDate();
+                            this.leftobj[i].number = orderSettingList[i].number;
+                            this.leftobj[i].reservations = orderSettingList[i].reservations;
+                        }
                     } else {
                         this.showNotice(response.data.code, response.data.msg);
                     }
