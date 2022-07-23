@@ -23,4 +23,9 @@ public class OrderSettingServiceImpl implements OrderSettingService {
     public List<OrderSetting> getOrderSettingByYearAndMonth(Date specifiedDate) {
         return orderSettingMapper.getOrderSettingByYearAndMonth(specifiedDate);
     }
+
+    @Override
+    public boolean saveOrderSetting(OrderSetting orderSetting) {
+        return orderSettingMapper.saveOrderSetting(orderSetting) == 1;
+    }
 }

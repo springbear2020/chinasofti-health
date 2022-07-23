@@ -1,6 +1,7 @@
 package cn.edu.whut.binary.health.provider.mapper;
 
 import cn.edu.whut.binary.health.common.pojo.OrderSetting;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,10 @@ public interface OrderSettingMapper {
      */
     @Select("SELECT * FROM `t_ordersetting` WHERE DATE_FORMAT(orderDate,'%Y-%m') = DATE_FORMAT(#{specifiedDate},'%Y-%m')")
     List<OrderSetting> getOrderSettingByYearAndMonth(@Param("specifiedDate") Date specifiedDate);
+
+    /**
+     * 保存预约设置
+     */
+    @Insert("insert into t_ordersetting(orderDate, number, reservations) VALUES (#{orderDate},#{number},#{reservations})")
+    int saveOrderSetting(OrderSetting orderSetting);
 }

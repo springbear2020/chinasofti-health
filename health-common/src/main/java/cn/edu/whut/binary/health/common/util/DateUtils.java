@@ -36,16 +36,10 @@ public class DateUtils {
      * if parse then return the default Date given by user
      *
      * @param dateStr     Date in string format
-     * @param defaultDate Default date when parse in exception was thrown
      * @return java.util.Date
      */
-    public static Date parseStringWithHyphen(String dateStr, Date defaultDate) {
+    public static Date parseStringWithHyphen(String dateStr) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return dateFormat.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return defaultDate;
-        }
+        return dateFormat.parse(dateStr);
     }
 }

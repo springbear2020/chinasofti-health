@@ -34,8 +34,9 @@
                         <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary"
                                    @click="downloadTemplate()">模板下载
                         </el-button>
-                        <el-upload action="/ordersetting/upload.do"
-                                   name="excelFile"
+                        <el-upload action="/transfer.do"
+                                   name="file"
+                                   accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                    :show-file-list="false"
                                    :on-success="handleSuccess"
                                    :before-upload="beforeUpload">
@@ -174,39 +175,45 @@
             },
 
             // 预约设置
-            handleOrderSet(day) {
+            handleOrderSet(selectedDate) {
+                var dateStr = this.parseDate(selectedDate);
+                var number = prompt("请输入 " + dateStr + " 的可预约人数：");
+                if (number) {
+                    axios({
+                        method: "post",
+                        url: "/orderSetting.do",
+                        data: this.checkitemIds,
+                        params: {
+                            "dateStr": dateStr,
+                            "number": number
+                        }
+                    }).then(response => {
+                        this.showNotice(response.data.code, response.data.msg);
+                    }).finally(() => {
+                        this.initData(null);
+                    });
+                }
             },
 
             // 上传之前进行文件格式校验
             beforeUpload(file) {
                 const isXLS = file.type === 'application/vnd.ms-excel';
-                if (isXLS) {
-                    return true;
-                }
                 const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                if (isXLSX) {
+                if (isXLS || isXLSX) {
                     return true;
                 }
-                this.$message.error('上传文件只能是 xls 或者 xlsx 格式!');
+                this.$message.error('上传文件只能是 xls 或者 xlsx 格式！');
                 return false;
             },
 
             // 下载模板文件
             downloadTemplate() {
-                window.location.href = "../../template/ordersetting_template.xlsx";
+                window.location.href = "/transfer.do?filename=orderSetting_template.xlsx";
             },
 
             // 上传成功提示
             handleSuccess(response, file) {
-                if (response.flag) {
-                    this.$message({
-                        message: response.message,
-                        type: 'success'
-                    });
-                } else {
-                    this.$message.error(response.message);
-                }
-                console.log(response, file, fileList);
+                this.showNotice(response.code, response.msg);
             },
 
             // 初始化当前页要展示的日期
@@ -261,21 +268,22 @@
                 }
 
                 this.leftobj = [
-                    {date: 1, number: 120, reservations: 1},
-                    {date: 3, number: 120, reservations: 1},
-                    {date: 4, number: 120, reservations: 120},
-                    {date: 6, number: 120, reservations: 1},
-                    {date: 8, number: 120, reservations: 1}
+                    // {date: 1, number: 120, reservations: 1},
                 ];
                 // 从服务器获取指定年、指定月的预约数据
-                // var dateStr = this.formatDate(this.currentYear, this.currentMonth, this.currentDay);
-                var dateStr = "2019-03-03";
-                axios.get("/orderSetting/" + dateStr + ".do").then(response => {
+                var dateStr = this.formatDate(this.currentYear, this.currentMonth, this.currentDay);
+                axios({
+                    url: "/orderSetting.do",
+                    method: "get",
+                    params: {
+                        "dateStr": dateStr
+                    }
+                }).then(response => {
                     if (this.SUCCESS == response.data.code) {
                         var orderSettingList = response.data.resultMap.list;
                         this.leftobj = [];
                         var tempDate;
-                        for(var i in orderSettingList){
+                        for (var i in orderSettingList) {
                             // 将后台传来的 Date 数据转化为 js 的 Date 类型
                             tempDate = new Date(orderSettingList[i].orderDate);
                             this.leftobj[i] = {};
@@ -286,7 +294,7 @@
                     } else {
                         this.showNotice(response.data.code, response.data.msg);
                     }
-                })
+                });
             },
             // 切换到当前月份
             goCurrentMonth: function (year, month) {
@@ -316,6 +324,19 @@
                 var d = day;
                 if (d < 10) d = "0" + d;
                 return y + "-" + m + "-" + d
+            },
+            // Parse the JavaScript date like this '2022-07-02' format
+            parseDate: function (date) {
+                var nowMonth = date.getMonth() + 1;
+                var strDate = date.getDate();
+                var separator = "-";
+                if (nowMonth >= 1 && nowMonth <= 9) {
+                    nowMonth = "0" + nowMonth;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                return date.getFullYear() + separator + nowMonth + separator + strDate;
             }
         }
     })

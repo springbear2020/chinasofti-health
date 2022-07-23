@@ -1,5 +1,6 @@
 package cn.edu.whut.binary.health.common.util;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -7,7 +8,7 @@ import java.util.UUID;
  * @author Spring-_-Bear
  * @datetime 2022-07-22 10:08 Friday
  */
-public class StringUtils {
+public class FileUtils {
     /**
      * 重命名图片文件：格式为 datetime-uuid.suffix, eg. 20220722101223-dc5b75ba.png
      *

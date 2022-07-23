@@ -14,4 +14,9 @@ public interface OrderSettingService {
      * 获取指定年、指定月的预约设置数据
      */
     List<OrderSetting> getOrderSettingByYearAndMonth(Date specifiedDate);
+
+    /**
+     * 保存预约设置
+     */
+    boolean saveOrderSetting(OrderSetting orderSetting);
 }

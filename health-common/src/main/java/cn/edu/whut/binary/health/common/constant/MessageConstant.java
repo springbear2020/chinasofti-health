@@ -46,9 +46,9 @@ public class MessageConstant {
     public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL = "查询套餐对应的检查组失败";
     public static final String QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS = "查询套餐对应的检查组成功";
 
-    /* ------------------------------------- 图片 ------------------------------------- */
-    public static final String PIC_UPLOAD_SUCCESS = "图片上传成功";
-    public static final String PIC_UPLOAD_FAIL = "图片上传失败";
+    /* ------------------------------------- 文件 ------------------------------------- */
+    public static final String UPLOAD_SUCCESS = "文件上传成功";
+    public static final String UPLOAD_FAIL = "文件上传失败";
 
     /* ------------------------------------- 预约 ------------------------------------- */
     public static final String IMPORT_ORDER_SETTING_FAIL = "批量导入预约设置数据失败";
@@ -57,6 +57,13 @@ public class MessageConstant {
     public static final String GET_ORDER_SETTING_FAIL = "获取预约设置数据失败";
     public static final String ORDER_SETTING_SUCCESS = "预约设置成功";
     public static final String ORDER_SETTING_FAIL = "预约设置失败";
+    public static final String QUERY_ORDER_SUCCESS = "查询预约信息成功";
+    public static final String QUERY_ORDER_FAIL = "查询预约信息失败";
+    public static final String SELECTED_DATE_CANNOT_ORDER = "所选日期不能进行体检预约";
+    public static final String ORDER_FULL = "预约已满";
+    public static final String HAS_ORDERED = "已经完成预约，不能重复预约";
+    public static final String ORDER_SUCCESS = "预约成功";
+    public static final String ORDER_FAIL = "预约失败";
 
     /* ------------------------------------- 会员 ------------------------------------- */
     public static final String ADD_MEMBER_FAIL = "新增会员失败";
@@ -67,15 +74,6 @@ public class MessageConstant {
     public static final String EDIT_MEMBER_SUCCESS = "编辑会员成功";
     public static final String GET_MEMBER_NUMBER_REPORT_SUCCESS = "获取会员统计数据成功";
     public static final String GET_MEMBER_NUMBER_REPORT_FAIL = "获取会员统计数据失败";
-
-    /* ------------------------------------- 预约 ------------------------------------- */
-    public static final String QUERY_ORDER_SUCCESS = "查询预约信息成功";
-    public static final String QUERY_ORDER_FAIL = "查询预约信息失败";
-    public static final String SELECTED_DATE_CANNOT_ORDER = "所选日期不能进行体检预约";
-    public static final String ORDER_FULL = "预约已满";
-    public static final String HAS_ORDERED = "已经完成预约，不能重复预约";
-    public static final String ORDER_SUCCESS = "预约成功";
-    public static final String ORDER_FAIL = "预约失败";
 
     /* ------------------------------------- 登录 ------------------------------------- */
     public static final String LOGIN_SUCCESS = "登录成功";
