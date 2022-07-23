@@ -40,14 +40,6 @@ public interface CheckItemMapper {
     int deleteCheckItemById(@Param("checkItemId") Integer checkItemId);
 
     /**
-     * 根据检查项 ID 查询其对应的检查组数量
-     *
-     * @return 当前检查项关联的检查组的数量
-     */
-    @Select("select count(*) from t_checkgroup_checkitem where checkitem_id = #{checkItemId}")
-    int getCheckGroupNumsByCheckItem(@Param("checkItemId") Integer checkItemId);
-
-    /**
      * 根据 ID 查询检查项
      */
     @Select("select * from t_checkitem where id = #{checkItemId}")

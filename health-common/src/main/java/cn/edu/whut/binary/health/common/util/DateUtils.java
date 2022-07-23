@@ -1,5 +1,6 @@
 package cn.edu.whut.binary.health.common.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,5 +29,23 @@ public class DateUtils {
     public static String parseDatetimeNoHyphen(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         return dateFormat.format(date);
+    }
+
+    /**
+     * Parse the date in string format into java.util.Date,
+     * if parse then return the default Date given by user
+     *
+     * @param dateStr     Date in string format
+     * @param defaultDate Default date when parse in exception was thrown
+     * @return java.util.Date
+     */
+    public static Date parseStringWithHyphen(String dateStr, Date defaultDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return dateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return defaultDate;
+        }
     }
 }

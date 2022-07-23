@@ -4,6 +4,7 @@ import cn.edu.whut.binary.health.api.service.CheckItemService;
 import cn.edu.whut.binary.health.common.constant.MessageConstant;
 import cn.edu.whut.binary.health.common.entity.PageQueryBean;
 import cn.edu.whut.binary.health.common.pojo.CheckItem;
+import cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.CheckItemMapper;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.PageHelper;
@@ -21,6 +22,8 @@ import java.util.List;
 public class CheckItemServiceImpl implements CheckItemService {
     @Autowired
     private CheckItemMapper checkItemMapper;
+    @Autowired
+    private CheckItemGroupMapper checkItemGroupMapper;
 
     @Override
     public boolean saveCheckItem(CheckItem checkItem) {
@@ -37,7 +40,7 @@ public class CheckItemServiceImpl implements CheckItemService {
     @Override
     public boolean deleteCheckItemById(Integer checkItemId) {
         // 检查当前检查项与检查组的关联关系，若存在关联则当前检查项不能删除
-        if (checkItemMapper.getCheckGroupNumsByCheckItem(checkItemId) > 0) {
+        if (checkItemGroupMapper.getCheckGroupNumsByCheckItem(checkItemId) > 0) {
             throw new RuntimeException(MessageConstant.CHECK_ITEM_GROUP_RELATION_EXISTS);
         }
         return checkItemMapper.deleteCheckItemById(checkItemId) == 1;

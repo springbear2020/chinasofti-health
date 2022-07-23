@@ -50,7 +50,13 @@ public class SetMealServiceImpl implements SetMealService {
 
     @Override
     public boolean deleteSetMealById(Integer setMealId) {
-        return setMealMapper.deleteSetMealId(setMealId) == 1;
+        // 删除套餐信息，删除失败直接返回 false
+        if (setMealMapper.deleteSetMealId(setMealId) != 1) {
+            return false;
+        }
+        // 删除套餐对应的检查组关联信息
+        setMealCheckGroupMapper.deleteCheckGroupsOfSetMeal(setMealId);
+        return true;
     }
 
     @Override

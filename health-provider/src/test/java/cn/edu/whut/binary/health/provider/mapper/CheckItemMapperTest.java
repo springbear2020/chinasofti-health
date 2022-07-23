@@ -33,11 +33,6 @@ public class CheckItemMapperTest {
     }
 
     @Test
-    public void getCheckGroupNumsByCheckItem() {
-        System.out.println(checkItemMapper.getCheckGroupNumsByCheckItem(28));
-    }
-
-    @Test
     public void updateCheckItemById() {
         CheckItem checkItem = new CheckItem();
         checkItem.setId(133);

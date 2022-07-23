@@ -35,4 +35,12 @@ public interface CheckItemGroupMapper {
      */
     @Select("select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{checkGroupId}")
     List<Integer> getCheckItemIdsOfCheckGroup(@Param("checkGroupId") Integer checkGroupId);
+
+    /**
+     * 根据检查项 ID 查询其对应的检查组数量
+     *
+     * @return 当前检查项关联的检查组的数量
+     */
+    @Select("select count(*) from t_checkgroup_checkitem where checkitem_id = #{checkItemId}")
+    int getCheckGroupNumsByCheckItem(@Param("checkItemId") Integer checkItemId);
 }

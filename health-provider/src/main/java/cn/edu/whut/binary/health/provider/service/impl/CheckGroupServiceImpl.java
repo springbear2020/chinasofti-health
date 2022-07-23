@@ -6,6 +6,7 @@ import cn.edu.whut.binary.health.common.entity.PageQueryBean;
 import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.provider.mapper.CheckGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper;
+import cn.edu.whut.binary.health.provider.mapper.SetMealCheckGroupMapper;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,6 +25,8 @@ public class CheckGroupServiceImpl implements CheckGroupService {
     private CheckGroupMapper checkGroupMapper;
     @Autowired
     private CheckItemGroupMapper checkItemGroupMapper;
+    @Autowired
+    private SetMealCheckGroupMapper setMealCheckGroupMapper;
 
     @Override
     public boolean saveCheckGroup(CheckGroup checkGroup, List<Integer> checkItemIdList) {
@@ -52,10 +55,16 @@ public class CheckGroupServiceImpl implements CheckGroupService {
     @Override
     public boolean deleteCheckGroupById(Integer checkGroupId) {
         // 检查当前检查组与套餐的关联关系，若存在关联则当前检查组不能删除
-        if (checkGroupMapper.getCheckGroupNumsOfSetMeal(checkGroupId) > 0) {
+        if (setMealCheckGroupMapper.getCheckGroupNumsOfSetMeal(checkGroupId) > 0) {
             throw new RuntimeException(MessageConstant.CHECK_GROUP_SET_MEAL_RELATION_EXISTS);
         }
-        return checkGroupMapper.deleteCheckGroupId(checkGroupId) == 1;
+        // 删除检查组失败直接返回 false
+        if (checkGroupMapper.deleteCheckGroupId(checkGroupId) != 1) {
+            return false;
+        }
+        // 删除检查组所对应的检查项关联信息
+        checkItemGroupMapper.deleteCheckItemsOfCheckGroup(checkGroupId);
+        return true;
     }
 
     @Override
