@@ -26,6 +26,6 @@ public class OrderSettingServiceImpl implements OrderSettingService {
 
     @Override
     public boolean saveOrderSetting(OrderSetting orderSetting) {
-        return orderSettingMapper.saveOrderSetting(orderSetting) == 1;
+        return orderSettingMapper.saveOrUpdateOrderSetting(orderSetting) > 0;
     }
 }

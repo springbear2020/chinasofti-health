@@ -75,12 +75,6 @@
             <artifactId>commons-fileupload</artifactId>
             <version>${commons-fileupload.version}</version>
         </dependency>
-        <!-- Qiniu cloud -->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.7.0</version>
-        </dependency>
     </dependencies>
 
     <build>

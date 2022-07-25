@@ -1,9 +1,11 @@
 package cn.edu.whut.binary.health.backend.controller;
 
+import cn.edu.whut.binary.health.api.service.TransferService;
 import cn.edu.whut.binary.health.common.constant.MessageConstant;
 import cn.edu.whut.binary.health.common.entity.Response;
 import cn.edu.whut.binary.health.common.util.DateUtils;
 import cn.edu.whut.binary.health.common.util.FileUtils;
+import com.alibaba.dubbo.config.annotation.Reference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -25,34 +27,43 @@ import java.util.Date;
  * @datetime 2022-07-22 09:11 Friday
  */
 @Controller
+@SuppressWarnings("all")
 public class TransferController {
+    @Reference
+    TransferService transferService;
+
+    /**
+     * 文件上传
+     */
     @PostMapping("/transfer.do")
     @ResponseBody
     public Response fileUpload(@RequestParam("file") MultipartFile file, HttpSession session) {
-        // 获取 webapp/ 目录在磁盘上的真实路径
-        String realPath = session.getServletContext().getRealPath("/");
-        // 判断今日文件上传保存目录是否存在，不存在则创建
-        String fileSavePath = "/file/upload/" + DateUtils.parseDateWithHyphen(new Date());
-        File directoryToday = new File(realPath + fileSavePath);
-        if (!directoryToday.exists()) {
-            // 创建多级目录，忽略返回值
-            directoryToday.mkdirs();
-        }
+        // 文件保存目录，保存在类路径下的【file/upload/2022-07-25/】目录中
+        String fileSavePath = "file/upload/" + DateUtils.parseDateWithHyphen(new Date());
+        // session.getServletContext().getRealPath("/") <=> 获取【webapp/】目录在磁盘上的真实路径 
+        String fileSaveDirectory = session.getServletContext().getRealPath("/") + "/" + fileSavePath;
+        // 创建文件保存目录
+        FileUtils.createDirectories(fileSaveDirectory);
+
+        // 获取源文件名，并给源文件重新命名，格式为：202207221015-a28ee439.png
+        String originalFilename = file.getOriginalFilename();
+        String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newFileName = FileUtils.getNewFileName(fileSuffix);
+        String fileDiskFullPath = fileSaveDirectory + "/" + newFileName;
 
         try {
-            // 获取源文件名
-            String imgName = file.getOriginalFilename();
-            assert imgName != null;
-            String suffix = imgName.substring(imgName.lastIndexOf("."));
-            // 给源文件重新命名，例如格式为：202207221015-a28ee439.png
-            String newFileName = FileUtils.getImageFileName(suffix);
-            // 保存文件到磁盘目录
-            file.transferTo(new File(directoryToday + "/" + newFileName));
-            return Response.success(MessageConstant.UPLOAD_SUCCESS).put("url", fileSavePath + "/" + newFileName);
+            // 保存文件到本地磁盘目录
+            file.transferTo(new File(fileDiskFullPath));
         } catch (IOException e) {
-            e.printStackTrace();
+            return Response.error(MessageConstant.UPLOAD_FAIL);
         }
-        return Response.error(MessageConstant.UPLOAD_FAIL);
+
+        // 保存文件到七牛云服务器
+        String key = fileSavePath + "/" + newFileName;
+        String qiniuFileAccessUrl = transferService.qiniuFileUpload(fileDiskFullPath, key);
+        // 返回给客户端的文件访问地址：如果七牛云服务器保存成功则返回七牛云文件访问 url，否则返回本地磁盘的访问 url
+        String fileAccessUrl = qiniuFileAccessUrl == null ? "/" + key : qiniuFileAccessUrl;
+        return Response.success(MessageConstant.UPLOAD_SUCCESS).put("url", fileAccessUrl);
     }
 
     /**
