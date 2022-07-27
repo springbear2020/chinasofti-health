@@ -1,5 +1,8 @@
 package cn.edu.whut.binary.health.common.pojo;
 
+
+import cn.edu.whut.binary.health.common.poi.annotation.ExcelColumnName;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,19 +13,21 @@ import java.util.Date;
 public class OrderSetting implements Serializable {
     private static final long serialVersionUID = -3951857524748863364L;
 
-    private Integer id ;
+    private Integer id;
     /**
      * 预约设置日期
      */
+    @ExcelColumnName("日期")
     private Date orderDate;
     /**
      * 可预约人数
      */
-    private int number;
+    @ExcelColumnName("可预约人数")
+    private Integer number;
     /**
      * 已预约人数
      */
-    private int reservations;
+    private Integer reservations;
 
     public OrderSetting() {
     }

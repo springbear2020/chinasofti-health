@@ -1,5 +1,6 @@
 package cn.edu.whut.binary.health.backend.controller;
 
+import cn.edu.whut.binary.health.api.service.OrderSettingService;
 import cn.edu.whut.binary.health.api.service.TransferService;
 import cn.edu.whut.binary.health.common.constant.MessageConstant;
 import cn.edu.whut.binary.health.common.entity.Response;
@@ -31,6 +32,8 @@ import java.util.Date;
 public class TransferController {
     @Reference
     TransferService transferService;
+    @Reference
+    private OrderSettingService orderSettingService;
 
     /**
      * 文件上传
@@ -63,6 +66,13 @@ public class TransferController {
         String qiniuFileAccessUrl = transferService.qiniuFileUpload(fileDiskFullPath, key);
         // 返回给客户端的文件访问地址：如果七牛云服务器保存成功则返回七牛云文件访问 url，否则返回本地磁盘的访问 url
         String fileAccessUrl = qiniuFileAccessUrl == null ? "/" + key : qiniuFileAccessUrl;
+
+        // 如果是 .xls 或 .xlsx 文件则将预约数据保存或更新到数据库
+        if (".xls".equals(fileSuffix) || ".xlsx".equals(fileSuffix)) {
+            if (!orderSettingService.saveOrUpdateOrderSettingFromExcel(fileDiskFullPath)) {
+                return Response.error(MessageConstant.ORDER_SETTING_FAIL);
+            }
+        }
         return Response.success(MessageConstant.UPLOAD_SUCCESS).put("url", fileAccessUrl);
     }
 

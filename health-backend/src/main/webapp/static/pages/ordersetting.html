@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <!-- 页面 meta -->
     <meta charset="utf-8">
@@ -190,7 +190,7 @@
                     }).then(response => {
                         this.showNotice(response.data.code, response.data.msg);
                     }).finally(() => {
-                        this.initData(null);
+                        this.initData(dateStr);
                     });
                 }
             },

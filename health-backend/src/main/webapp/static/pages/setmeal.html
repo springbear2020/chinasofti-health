@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <!-- 页面 meta -->
     <meta charset="utf-8">
@@ -14,17 +14,6 @@
     <link rel="stylesheet" href="../css/style.css">
 
     <style>
-        .avatar-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .avatar-uploader .el-upload:hover {
-            border-color: #409EFF;
-        }
 
         .avatar-uploader-icon {
             font-size: 28px;
@@ -50,7 +39,7 @@
             font-size: 14px;
             color: rgb(96, 98, 102);
             overflow: hidden;
-            flex: 1 1 0%;
+            flex: 1 1 0;
         }
 
         .datatable td, .datatable th {
@@ -91,6 +80,11 @@
                 <el-table-column type="index" align="center" label="序号"></el-table-column>
                 <el-table-column prop="code" label="套餐编码" align="center"></el-table-column>
                 <el-table-column prop="name" label="套餐名称" align="center"></el-table-column>
+                <el-table-column prop="img" label="套餐图片" align="center">
+                    <template   slot-scope="scope">
+                        <img :src="scope.row.img"  min-width="70" height="70" style="border-radius: 50%"/>
+                    </template>
+                </el-table-column>
                 <el-table-column label="适用性别" align="center">
                     <template slot-scope="scope">
                         <span>{{ scope.row.sex == '0' ? '不限' : scope.row.sex == '1' ? '男' : '女'}}</span>
@@ -128,12 +122,12 @@
                                     <el-row>
                                         <el-col :span="12">
                                             <el-form-item label="编码">
-                                                <el-input v-model="formData.code"/>
+                                                <el-input v-model="formData.code"></el-input>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="名称">
-                                                <el-input v-model="formData.name"/>
+                                                <el-input v-model="formData.name"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
@@ -149,19 +143,19 @@
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="助记码">
-                                                <el-input v-model="formData.helpCode"/>
+                                                <el-input v-model="formData.helpCode"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
                                     <el-row>
                                         <el-col :span="12">
                                             <el-form-item label="套餐价格">
-                                                <el-input v-model="formData.price"/>
+                                                <el-input v-model="formData.price"></el-input>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="适用年龄">
-                                                <el-input v-model="formData.age"/>
+                                                <el-input v-model="formData.age"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
@@ -242,12 +236,12 @@
                                     <el-row>
                                         <el-col :span="12">
                                             <el-form-item label="编码">
-                                                <el-input v-model="formData.code"/>
+                                                <el-input v-model="formData.code"></el-input>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="名称">
-                                                <el-input v-model="formData.name"/>
+                                                <el-input v-model="formData.name"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
@@ -263,19 +257,19 @@
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="助记码">
-                                                <el-input v-model="formData.helpCode"/>
+                                                <el-input v-model="formData.helpCode"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
                                     <el-row>
                                         <el-col :span="12">
                                             <el-form-item label="套餐价格">
-                                                <el-input v-model="formData.price"/>
+                                                <el-input v-model="formData.price"></el-input>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="12">
                                             <el-form-item label="适用年龄">
-                                                <el-input v-model="formData.age"/>
+                                                <el-input v-model="formData.age"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
@@ -287,7 +281,7 @@
                                                         action="/transfer.do"
                                                         accept="image/jpeg,image/png"
                                                         :auto-upload="autoUpload"
-                                                        name="img"
+                                                        name="file"
                                                         :show-file-list="false"
                                                         :on-success="handleAvatarSuccess"
                                                         :before-upload="beforeAvatarUpload">
@@ -545,7 +539,6 @@
             handleEdit(row) {
                 this.resetForm();
                 this.formData = row;
-                console.log(row);
                 this.imageUrl = row.img;
                 this.dialogFormVisibleEdit = true;
                 // 查询所有检查组信息

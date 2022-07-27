@@ -5,13 +5,10 @@
 <mapper namespace="cn.edu.whut.binary.health.provider.mapper.OrderSettingMapper">
     <!-- int saveOrUpdateOrderSetting(OrderSetting orderSetting); TODO 给 t_order_setting 表的 orderDate 字段添加唯一约束 -->
     <insert id="saveOrUpdateOrderSetting" parameterType="orderSetting">
-        insert into t_ordersetting(orderDate, number, reservations) VALUES (#{orderDate},#{number},#{reservations})
+        insert into t_ordersetting(orderDate, number) VALUES (#{orderDate},#{number})
         ON DUPLICATE KEY UPDATE
         <if test="number != null">
-            number = #{number},
-        </if>
-        <if test="reservations != null">
-            reservations = #{reservations}
+            number = #{number}
         </if>
     </insert>
 </mapper>

@@ -100,8 +100,13 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="1">
+          <list size="6">
             <item index="0" class="java.lang.String" itemvalue="slot-scope" />
+            <item index="1" class="java.lang.String" itemvalue="v-for" />
+            <item index="2" class="java.lang.String" itemvalue="v-model" />
+            <item index="3" class="java.lang.String" itemvalue="@click" />
+            <item index="4" class="java.lang.String" itemvalue="v-if" />
+            <item index="5" class="java.lang.String" itemvalue="v-else" />
           </list>
         </value>
       </option>
@@ -110,7 +115,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="30">
+          <list size="34">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -141,6 +146,10 @@
             <item index="27" class="java.lang.String" itemvalue="el-breadcrumb" />
             <item index="28" class="java.lang.String" itemvalue="el-table" />
             <item index="29" class="java.lang.String" itemvalue="el-menu-item" />
+            <item index="30" class="java.lang.String" itemvalue="el-tab-pane" />
+            <item index="31" class="java.lang.String" itemvalue="el-tabs" />
+            <item index="32" class="java.lang.String" itemvalue="el-upload" />
+            <item index="33" class="java.lang.String" itemvalue="el-card" />
           </list>
         </value>
       </option>
