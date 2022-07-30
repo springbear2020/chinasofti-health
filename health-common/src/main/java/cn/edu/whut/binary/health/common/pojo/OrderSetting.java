@@ -32,9 +32,15 @@ public class OrderSetting implements Serializable {
     public OrderSetting() {
     }
 
-    public OrderSetting(Date orderDate, int number) {
+    public OrderSetting(Integer id, Date orderDate, Integer number, Integer reservations) {
+        this.id = id;
         this.orderDate = orderDate;
         this.number = number;
+        this.reservations = reservations;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Integer getId() {
@@ -53,19 +59,19 @@ public class OrderSetting implements Serializable {
         this.orderDate = orderDate;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
-    public int getReservations() {
+    public Integer getReservations() {
         return reservations;
     }
 
-    public void setReservations(int reservations) {
+    public void setReservations(Integer reservations) {
         this.reservations = reservations;
     }
 

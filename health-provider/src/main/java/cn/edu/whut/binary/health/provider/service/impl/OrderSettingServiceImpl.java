@@ -27,11 +27,6 @@ public class OrderSettingServiceImpl implements OrderSettingService {
     }
 
     @Override
-    public boolean saveOrderSetting(OrderSetting orderSetting) {
-        return orderSettingMapper.saveOrUpdateOrderSetting(orderSetting) > 0;
-    }
-
-    @Override
     public boolean saveOrUpdateOrderSettingFromExcel(String excelFileFullPath) {
         try {
             // 使用自定义的 jar 包实现 Excel 行数据转换为 Java 对象
@@ -39,12 +34,27 @@ public class OrderSettingServiceImpl implements OrderSettingService {
             List<OrderSetting> orderSettingList = converter.excelConvertBean(OrderSetting.class);
             // 逐条数据插入或更新到数据表中
             for (OrderSetting orderSetting : orderSettingList) {
-                orderSettingMapper.saveOrUpdateOrderSetting(orderSetting);
+                // 当前日期数据已经存在，则进行更新，否则新增记录
+                if (orderSettingMapper.getOrderSettingByDate(orderSetting.getOrderDate()) != null) {
+                    orderSettingMapper.updateOrderSettingByDate(orderSetting);
+                } else {
+                    orderSettingMapper.saveOrderSetting(orderSetting);
+                }
             }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public OrderSetting getOrderSettingByDate(Date date) {
+        return orderSettingMapper.getOrderSettingByDate(date);
+    }
+
+    @Override
+    public boolean updateOrderSettingByDate(OrderSetting orderSetting) {
+        return orderSettingMapper.updateOrderSettingByDate(orderSetting) == 1;
     }
 }

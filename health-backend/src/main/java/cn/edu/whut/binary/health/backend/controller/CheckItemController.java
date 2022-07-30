@@ -21,6 +21,9 @@ public class CheckItemController {
     @Reference
     private CheckItemService checkItemService;
 
+    /**
+     * 保存检查项
+     */
     @PostMapping("/checkItem.do")
     public Response saveCheckItem(@RequestBody CheckItem checkItem) {
         if (checkItemService.saveCheckItem(checkItem)) {
@@ -29,15 +32,9 @@ public class CheckItemController {
         return Response.error(MessageConstant.ADD_CHECK_ITEM_FAIL);
     }
 
-    @GetMapping("/checkItem.do")
-    public Response getCheckItemPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
-        PageInfo<CheckItem> checkItemPageData = checkItemService.getCheckItemPageData(new PageQueryBean(currentPage, pageSize, condition));
-        if (checkItemPageData == null || checkItemPageData.getList() == null || checkItemPageData.getList().size() == 0) {
-            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
-        }
-        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("pageData", checkItemPageData);
-    }
-
+    /**
+     * 删除检查项
+     */
     @DeleteMapping("/checkItem.do")
     public Response deleteCheckItem(@RequestParam Integer checkItemId) {
         try {
@@ -51,15 +48,9 @@ public class CheckItemController {
         return Response.error(MessageConstant.DELETE_CHECK_ITEM_FAIL);
     }
 
-    @GetMapping("/checkItem/{checkItemId}.do")
-    public Response getOneCheckItem(@PathVariable("checkItemId") Integer checkItemId) {
-        CheckItem checkItem = checkItemService.getCheckItemById(checkItemId);
-        if (checkItem == null) {
-            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
-        }
-        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("item", checkItem);
-    }
-
+    /**
+     * 更新检查项
+     */
     @PutMapping("/checkItem.do")
     public Response updateCheckItem(@RequestBody CheckItem checkItem) {
         if (checkItemService.updateCheckItemById(checkItem)) {
@@ -69,7 +60,31 @@ public class CheckItemController {
     }
 
     /**
-     * 获取所有的检查项信息，提供给检查组新增、编辑时使用
+     * 获取检查项分页数据
+     */
+    @GetMapping("/checkItem.do")
+    public Response getCheckItemPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
+        PageInfo<CheckItem> checkItemPageData = checkItemService.getCheckItemPageData(new PageQueryBean(currentPage, pageSize, condition));
+        if (checkItemPageData == null || checkItemPageData.getList() == null || checkItemPageData.getList().size() == 0) {
+            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("pageData", checkItemPageData);
+    }
+
+    /**
+     * 获取检查项
+     */
+    @GetMapping("/checkItem/{checkItemId}.do")
+    public Response getCheckItem(@PathVariable("checkItemId") Integer checkItemId) {
+        CheckItem checkItem = checkItemService.getCheckItemById(checkItemId);
+        if (checkItem == null) {
+            return Response.info(MessageConstant.QUERY_CHECK_ITEM_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_CHECK_ITEM_SUCCESS).put("item", checkItem);
+    }
+
+    /**
+     * 获取所有的检查项，提供给检查组新增、编辑时使用
      */
     @GetMapping("/checkItem/all.do")
     public Response getAllCheckItems() {

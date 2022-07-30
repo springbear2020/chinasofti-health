@@ -28,7 +28,6 @@ import java.util.Date;
  * @datetime 2022-07-22 09:11 Friday
  */
 @Controller
-@SuppressWarnings("all")
 public class TransferController {
     @Reference
     TransferService transferService;
@@ -38,8 +37,8 @@ public class TransferController {
     /**
      * 文件上传
      */
-    @PostMapping("/transfer.do")
     @ResponseBody
+    @PostMapping("/transfer.do")
     public Response fileUpload(@RequestParam("file") MultipartFile file, HttpSession session) {
         // 文件保存目录，保存在类路径下的【file/upload/2022-07-25/】目录中
         String fileSavePath = "file/upload/" + DateUtils.parseDateWithHyphen(new Date());

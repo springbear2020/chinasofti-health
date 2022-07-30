@@ -35,11 +35,15 @@ public class DateUtils {
      * Parse the date in string format into java.util.Date,
      * if parse then return the default Date given by user
      *
-     * @param dateStr     Date in string format
+     * @param dateStr Date in string format
      * @return java.util.Date
      */
-    public static Date parseStringWithHyphen(String dateStr) throws ParseException {
+    public static Date parseStringWithHyphen(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.parse(dateStr);
+        try {
+            return dateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package cn.edu.whut.binary.health.provider.mapper;
 
+import cn.edu.whut.binary.health.common.pojo.CheckItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,11 @@ public class CheckItemGroupMapperTest {
         list.add(101);
         list.add(102);
         System.out.println(checkItemGroupMapper.saveCheckItemIdListBatch(100, list));
+    }
+
+    @Test
+    public void getCheckItemsOfCheckGroup() {
+        List<CheckItem> checkItemList = checkItemGroupMapper.getCheckItemsOfCheckGroup(5);
+        checkItemList.forEach(System.out::println);
     }
 }

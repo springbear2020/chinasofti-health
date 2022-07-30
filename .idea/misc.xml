@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/health-backend" />
+    <file type="web" url="file://$PROJECT_DIR$/health-mobile" />
     <file type="web" url="file://$PROJECT_DIR$/health-provider" />
     <type id="Spring" />
   </component>

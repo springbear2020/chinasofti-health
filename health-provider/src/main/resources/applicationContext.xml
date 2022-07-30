@@ -28,6 +28,21 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
+<!--    &lt;!&ndash; Jedis connection pool &ndash;&gt;-->
+<!--    <context:property-placeholder location="classpath:redis.properties"/>-->
+<!--    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
+<!--        <property name="maxTotal" value="${redis.pool.maxTotal}"/>-->
+<!--        <property name="maxIdle" value="${redis.pool.maxIdle}"/>-->
+<!--        <property name="minIdle" value="${redis.pool.minIdle}"/>-->
+<!--        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>-->
+<!--    </bean>-->
+<!--    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">-->
+<!--        <constructor-arg name="poolConfig" ref="poolConfig"/>-->
+<!--        <constructor-arg name="host" value="${redis.host}"/>-->
+<!--        <constructor-arg name="port" value="${redis.port}" type="int"/>-->
+<!--        <constructor-arg name="timeout" value="${redis.timeout}" type="int"/>-->
+<!--    </bean>-->
+
     <!-- Dubbo -->
     <import resource="classpath:dubbo-provider.xml"/>
 </beans>

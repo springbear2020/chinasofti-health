@@ -21,15 +21,6 @@ public class SetMealController {
     @Reference
     private SetMealService setMealService;
 
-    @GetMapping("/setMeal.do")
-    public Response getSetMealPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
-        PageInfo<SetMeal> setMealPageData = setMealService.getSetMealPageData(new PageQueryBean(currentPage, pageSize, condition));
-        if (setMealPageData == null || setMealPageData.getList() == null || setMealPageData.getList().size() == 0) {
-            return Response.info(MessageConstant.QUERY_SETMEAL_FAIL);
-        }
-        return Response.success(MessageConstant.QUERY_SETMEAL_SUCCESS).put("pageData", setMealPageData);
-    }
-
     /**
      * 保存套餐，并维护套餐与检查组的多对多关系
      */
@@ -41,24 +32,15 @@ public class SetMealController {
         return Response.error(MessageConstant.ADD_SETMEAL_FAIL);
     }
 
+    /**
+     * 删除套餐，并删除其所关联的检查组关系
+     */
     @DeleteMapping("/setMeal.do")
     public Response deleteSetMeal(@RequestParam Integer setMealId) {
         if (setMealService.deleteSetMealById(setMealId)) {
             return Response.success(MessageConstant.DELETE_SETMEAL_SUCCESS);
         }
         return Response.error(MessageConstant.DELETE_SETMEAL_FAIL);
-    }
-
-    /**
-     * 根据套餐 ID 查询其对应的检查组信息（一个套餐对应多个检查组）
-     */
-    @GetMapping("/setMeal/{setMealId}.do")
-    public Response getCheckItemIdsOfCheckGroup(@PathVariable("setMealId") Integer setMealId) {
-        List<Integer> checkGroupIdList = setMealService.getCheckGroupIdsOfSetMeal(setMealId);
-        if (checkGroupIdList == null || checkGroupIdList.size() == 0) {
-            return Response.info(MessageConstant.QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL);
-        }
-        return Response.success(MessageConstant.QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS).put("list", checkGroupIdList);
     }
 
     /**
@@ -73,5 +55,29 @@ public class SetMealController {
             return Response.success(MessageConstant.UPDATE_SET_MEAL_SUCCESS);
         }
         return Response.error(MessageConstant.UPDATE_SET_MEAL_FAIL);
+    }
+
+    /**
+     * 获取套餐分页数据
+     */
+    @GetMapping("/setMeal.do")
+    public Response getSetMealPageData(@RequestParam Integer currentPage, @RequestParam Integer pageSize, String condition) {
+        PageInfo<SetMeal> setMealPageData = setMealService.getSetMealPageData(new PageQueryBean(currentPage, pageSize, condition));
+        if (setMealPageData == null || setMealPageData.getList() == null || setMealPageData.getList().size() == 0) {
+            return Response.info(MessageConstant.QUERY_SETMEAL_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_SETMEAL_SUCCESS).put("pageData", setMealPageData);
+    }
+
+    /**
+     * 根据套餐 ID 查询其所关联的检查组的 ID 集合
+     */
+    @GetMapping("/setMeal/{setMealId}.do")
+    public Response getCheckItemIdsOfCheckGroup(@PathVariable("setMealId") Integer setMealId) {
+        List<Integer> checkGroupIdList = setMealService.getCheckGroupIdsOfSetMeal(setMealId);
+        if (checkGroupIdList == null || checkGroupIdList.size() == 0) {
+            return Response.info(MessageConstant.QUERY_CHECK_GROUP_OF_SET_MAIL_FAIL);
+        }
+        return Response.success(MessageConstant.QUERY_CHECK_GROUP_OF_SET_MAIL_SUCCESS).put("list", checkGroupIdList);
     }
 }

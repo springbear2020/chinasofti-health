@@ -16,14 +16,19 @@ public interface OrderSettingService {
     List<OrderSetting> getOrderSettingByYearAndMonth(Date specifiedDate);
 
     /**
-     * 保存预约设置
-     */
-    boolean saveOrderSetting(OrderSetting orderSetting);
-
-    /**
      * 从 Excel 文件中保存或更新预约数据
      *
      * @param excelFileFullPath Excel 文件全路径
      */
     boolean saveOrUpdateOrderSettingFromExcel(String excelFileFullPath);
+
+    /**
+     * 获取指定年、月、日的预约设置数据
+     */
+    OrderSetting getOrderSettingByDate(Date date);
+
+    /**
+     * 更新指定日期的预约数据
+     */
+    boolean updateOrderSettingByDate(OrderSetting orderSetting);
 }

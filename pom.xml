@@ -12,6 +12,7 @@
         <module>health-provider</module>
         <module>health-interface</module>
         <module>health-backend</module>
+        <module>health-mobile</module>
     </modules>
     <packaging>pom</packaging>
 

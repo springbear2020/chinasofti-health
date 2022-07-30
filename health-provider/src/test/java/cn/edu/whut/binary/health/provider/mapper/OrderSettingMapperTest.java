@@ -30,9 +30,16 @@ public class OrderSettingMapperTest {
     }
 
     @Test
-    public void saveOrderSetting() throws ParseException {
-        OrderSetting orderSetting = new OrderSetting(DateUtils.parseStringWithHyphen("2022-07-29"), 234);
-        orderSetting.setReservations(234);
-        System.out.println(orderSettingMapper.saveOrUpdateOrderSetting(orderSetting));
+    public void getOrderSettingByDate() throws ParseException {
+        System.out.println(orderSettingMapper.getOrderSettingByDate(DateUtils.parseStringWithHyphen("2019-03-20")));
+    }
+
+    @Test
+    public void updateOrderSettingByDate() throws ParseException {
+        OrderSetting orderSetting = new OrderSetting();
+        orderSetting.setOrderDate(DateUtils.parseStringWithHyphen("2022-07-08"));
+        orderSetting.setNumber(200);
+        orderSetting.setReservations(200);
+        System.out.println(orderSettingMapper.updateOrderSettingByDate(orderSetting));
     }
 }

@@ -48,4 +48,14 @@ public interface SetMealService {
      * @return true - 更新成功
      */
     boolean updateSetMeal(SetMeal setMeal, List<Integer> checkGroupIdList);
+
+    /**
+     * 获取所有套餐
+     */
+    List<SetMeal> getAllSetMeals();
+
+    /**
+     * 获取套餐详情：一个套餐下关联多个检查组，一个检查组中关联多个检查项
+     */
+    SetMeal getSetMealDetails(Integer setMealId);
 }

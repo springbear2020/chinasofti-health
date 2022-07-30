@@ -22,7 +22,19 @@ public interface OrderSettingMapper {
     List<OrderSetting> getOrderSettingByYearAndMonth(@Param("specifiedDate") Date specifiedDate);
 
     /**
-     * 保存或更新预约设置：日期记录不存在插入，已存在则更新
+     * 保存预约设置
      */
-    int saveOrUpdateOrderSetting(OrderSetting orderSetting);
+    @Insert("insert into t_ordersetting(orderDate, number, reservations) VALUES (#{orderDate},#{number},#{reservations})")
+    int saveOrderSetting(OrderSetting orderSetting);
+
+    /**
+     * 获取指定年、月、日的预约设置数据
+     */
+    @Select("SELECT * FROM `t_ordersetting` WHERE DATE_FORMAT(orderDate,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')")
+    OrderSetting getOrderSettingByDate(@Param("date") Date date);
+
+    /**
+     * 更新预约设置
+     */
+    int updateOrderSettingByDate(OrderSetting orderSetting);
 }

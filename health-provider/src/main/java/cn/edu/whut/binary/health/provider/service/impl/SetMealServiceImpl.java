@@ -2,7 +2,10 @@ package cn.edu.whut.binary.health.provider.service.impl;
 
 import cn.edu.whut.binary.health.api.service.SetMealService;
 import cn.edu.whut.binary.health.common.entity.PageQueryBean;
+import cn.edu.whut.binary.health.common.pojo.CheckGroup;
+import cn.edu.whut.binary.health.common.pojo.CheckItem;
 import cn.edu.whut.binary.health.common.pojo.SetMeal;
+import cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.SetMealCheckGroupMapper;
 import cn.edu.whut.binary.health.provider.mapper.SetMealMapper;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -23,6 +26,8 @@ public class SetMealServiceImpl implements SetMealService {
     private SetMealMapper setMealMapper;
     @Autowired
     private SetMealCheckGroupMapper setMealCheckGroupMapper;
+    @Autowired
+    private CheckItemGroupMapper checkItemGroupMapper;
 
     @Override
     public PageInfo<SetMeal> getSetMealPageData(PageQueryBean pageQueryBean) {
@@ -77,5 +82,26 @@ public class SetMealServiceImpl implements SetMealService {
             return setMealCheckGroupMapper.saveCheckGroupIdListBatch(setMeal.getId(), checkGroupIdList) > 0;
         }
         return false;
+    }
+
+    @Override
+    public List<SetMeal> getAllSetMeals() {
+        return setMealMapper.getAllSetMeals();
+    }
+
+    @Override
+    public SetMeal getSetMealDetails(Integer setMealId) {
+        SetMeal setMeal = setMealMapper.getSetMealById(setMealId);
+        // 查询套餐对应的检查组
+        List<CheckGroup> checkGroupList = setMealCheckGroupMapper.getCheckGroupsOfSetMeal(setMealId);
+        // 遍历查询每个检查组下对应的检查项
+        for (CheckGroup checkGroup : checkGroupList) {
+            List<CheckItem> checkItemList = checkItemGroupMapper.getCheckItemsOfCheckGroup(checkGroup.getId());
+            checkGroup.setCheckItems(checkItemList);
+        }
+        setMeal.setCheckGroups(checkGroupList);
+        return setMeal;
+
+        // TODO return setMealMapper.getSetMealDetails(setMealId);
     }
 }

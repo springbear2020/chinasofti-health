@@ -1,20 +1,21 @@
 package cn.edu.whut.binary.health.provider.mapper;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import cn.edu.whut.binary.health.common.pojo.CheckItem;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
+ * 检查组与检查项（多对多）
+ *
  * @author Spring-_-Bear
  * @datetime 2022-07-19 11:36 Tuesday
  */
 @Repository
 public interface CheckItemGroupMapper {
     /**
-     * 批量插入检查项 ID（一个检查组对应多个检查项）
+     * 批量保存检查项 ID（一个检查组对应多个检查项）
      *
      * @param checkGroupId    检查组 ID
      * @param checkItemIdList 检查项 ID 列表
@@ -29,7 +30,7 @@ public interface CheckItemGroupMapper {
     void deleteCheckItemsOfCheckGroup(@Param("checkGroupId") Integer checkGroupId);
 
     /**
-     * 根据检查组 ID 查询其对应的检查项信息（一个检查组对应多个检查项）
+     * 根据检查组 ID 查询其对应的检查项 ID 集合（一个检查组对应多个检查项）
      *
      * @return 检查组对应的检查项的 ID 集合
      */
@@ -43,4 +44,10 @@ public interface CheckItemGroupMapper {
      */
     @Select("select count(*) from t_checkgroup_checkitem where checkitem_id = #{checkItemId}")
     int getCheckGroupNumsByCheckItem(@Param("checkItemId") Integer checkItemId);
+
+    /**
+     * 查询检查组下的所有检查项信息（一个检查组对应多个检查项）
+     */
+    @Select("select * from t_checkitem where id in (select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{checkGroupId})")
+    List<CheckItem> getCheckItemsOfCheckGroup(@Param("checkGroupId") Integer checkGroupId);
 }

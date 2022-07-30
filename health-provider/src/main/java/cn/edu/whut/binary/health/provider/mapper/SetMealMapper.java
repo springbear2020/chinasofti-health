@@ -1,10 +1,9 @@
 package cn.edu.whut.binary.health.provider.mapper;
 
+import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.common.pojo.SetMeal;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,4 +41,26 @@ public interface SetMealMapper {
      * @return 1 - 更新成功
      */
     int updateSetMealById(SetMeal setMeal);
+
+    /**
+     * 查询所有套餐
+     */
+    @Select("select * from t_setmeal")
+    List<SetMeal> getAllSetMeals();
+
+    /**
+     * 根据 ID 查询套餐
+     */
+    @Select("select * from t_setmeal where id = #{setMealId}")
+    SetMeal getSetMealById(@Param("setMealId") Integer setMealId);
+
+    /**
+     * 查询套餐详情（包含套餐下的检查组、检查组下的检查项）
+     */
+    @Select("select * from t_setmeal where  id = #{setMealId}")
+    @Results({
+            @Result(id = true, property = "id", column = "id"),
+            @Result(property = "checkGroups", javaType = List.class, column = "id", many = @Many(select = "cn.edu.whut.binary.health.provider.mapper.SetMealCheckGroupMapper.getCheckGroupsDetails", fetchType = FetchType.LAZY))
+    })
+    SetMeal getSetMealDetails(@Param("setMealId") Integer setMealId);
 }

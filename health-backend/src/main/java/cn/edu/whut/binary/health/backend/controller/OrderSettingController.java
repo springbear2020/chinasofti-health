@@ -8,7 +8,6 @@ import cn.edu.whut.binary.health.common.util.DateUtils;
 import com.alibaba.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,39 +21,52 @@ public class OrderSettingController {
     private OrderSettingService orderSettingService;
 
     /**
-     * 获取指定年、指定月的预约设置数据
+     * 获取指定年、月的预约设置数据
      */
     @GetMapping("/orderSetting.do")
     public Response getOrderSettingData(@RequestParam("dateStr") String dateStr) {
-        Date specifiedDate;
-        try {
-            // 客户端指定年、指定月的预约设置数据。请求参数有错则默认查询当前年、当前月的数据
-            specifiedDate = DateUtils.parseStringWithHyphen(dateStr);
-        } catch (ParseException e) {
-            return Response.error(MessageConstant.QUERY_ORDER_FAIL);
+        Date specifiedDate = DateUtils.parseStringWithHyphen(dateStr);
+        if (specifiedDate == null) {
+            return Response.error(MessageConstant.GET_ORDER_SETTING_FAIL);
         }
         List<OrderSetting> orderSettingList = orderSettingService.getOrderSettingByYearAndMonth(specifiedDate);
         if (orderSettingList == null || orderSettingList.size() == 0) {
-            return Response.error(MessageConstant.QUERY_ORDER_FAIL);
+            return Response.error(MessageConstant.GET_ORDER_SETTING_FAIL);
         }
-        return Response.success(MessageConstant.QUERY_ORDER_SUCCESS).put("list", orderSettingList);
+        return Response.success(MessageConstant.GET_ORDER_SETTING_SUCCESS).put("list", orderSettingList);
     }
 
-    @PostMapping("/orderSetting.do")
-    public Response saveOrderSetting(@RequestParam("dateStr") String dateStr, @RequestParam("number") Integer number) {
-        Date specifiedDate;
-        try {
-            // 解析前端传来的时间字符串
-            specifiedDate = DateUtils.parseStringWithHyphen(dateStr);
-        } catch (ParseException e) {
+    /**
+     * 获取指定年、月、日的预约设置数据
+     */
+    @GetMapping("/orderSetting/{dateStr}.do")
+    public Response getOrderSetting(@PathVariable("dateStr") String dateStr) {
+        Date date = DateUtils.parseStringWithHyphen(dateStr);
+        if (date == null) {
             return Response.error(MessageConstant.ORDER_SETTING_FAIL);
         }
-        OrderSetting orderSetting = new OrderSetting(specifiedDate, number);
-        // 已预约人数设置为 0
-        orderSetting.setReservations(0);
-        if (orderSettingService.saveOrderSetting(orderSetting)) {
+        OrderSetting orderSetting = orderSettingService.getOrderSettingByDate(date);
+        if (orderSetting == null) {
+            return Response.error(MessageConstant.ORDER_SETTING_FAIL);
+        }
+        return Response.success(MessageConstant.ORDER_SETTING_SUCCESS).put("item", orderSetting);
+    }
+
+    /**
+     * 更新预约设置
+     */
+    @PutMapping("/orderSetting.do")
+    public Response updateOrderSetting(@RequestParam("reservations") Integer reservations, @RequestParam("dateStr") String dateStr) {
+        Date date = DateUtils.parseStringWithHyphen(dateStr);
+        if (date == null) {
+            return Response.error(MessageConstant.ORDER_SETTING_FAIL);
+        }
+        OrderSetting orderSetting = new OrderSetting();
+        orderSetting.setReservations(reservations);
+        orderSetting.setOrderDate(date);
+        if (orderSettingService.updateOrderSettingByDate(orderSetting)) {
             return Response.success(MessageConstant.ORDER_SETTING_SUCCESS);
         }
-        return Response.error(MessageConstant.ORDER_SETTING_FAIL);
+        return Response.success(MessageConstant.ORDER_SETTING_FAIL);
     }
 }
