@@ -69,7 +69,9 @@ public class TransferController {
         // 如果是 .xls 或 .xlsx 文件则将预约数据保存或更新到数据库
         if (".xls".equals(fileSuffix) || ".xlsx".equals(fileSuffix)) {
             if (!orderSettingService.saveOrUpdateOrderSettingFromExcel(fileDiskFullPath)) {
-                return Response.error(MessageConstant.ORDER_SETTING_FAIL);
+                return Response.error(MessageConstant.IMPORT_ORDER_SETTING_FAIL);
+            } else {
+                return Response.success(MessageConstant.IMPORT_ORDER_SETTING_SUCCESS);
             }
         }
         return Response.success(MessageConstant.UPLOAD_SUCCESS).put("url", fileAccessUrl);

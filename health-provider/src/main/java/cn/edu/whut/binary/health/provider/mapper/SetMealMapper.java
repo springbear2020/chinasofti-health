@@ -1,6 +1,5 @@
 package cn.edu.whut.binary.health.provider.mapper;
 
-import cn.edu.whut.binary.health.common.pojo.CheckGroup;
 import cn.edu.whut.binary.health.common.pojo.SetMeal;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -60,7 +59,9 @@ public interface SetMealMapper {
     @Select("select * from t_setmeal where  id = #{setMealId}")
     @Results({
             @Result(id = true, property = "id", column = "id"),
-            @Result(property = "checkGroups", javaType = List.class, column = "id", many = @Many(select = "cn.edu.whut.binary.health.provider.mapper.SetMealCheckGroupMapper.getCheckGroupsDetails", fetchType = FetchType.LAZY))
+            @Result(property = "checkGroups", javaType = List.class, column = "id",
+                    many = @Many(select = "cn.edu.whut.binary.health.provider.mapper.SetMealCheckGroupMapper.getCheckGroupsDetails",
+                            fetchType = FetchType.LAZY))
     })
     SetMeal getSetMealDetails(@Param("setMealId") Integer setMealId);
 }

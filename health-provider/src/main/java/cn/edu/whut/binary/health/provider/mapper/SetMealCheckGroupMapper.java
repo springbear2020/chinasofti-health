@@ -56,7 +56,9 @@ public interface SetMealCheckGroupMapper {
     @Select("select * from t_checkgroup where id in (select checkgroup_id from t_setmeal_checkgroup where setmeal_id = #{setMealId})")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(property = "checkItems", javaType = List.class, column = "id", many = @Many(select = "cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper.getCheckItemsOfCheckGroup", fetchType = FetchType.LAZY))
+            @Result(property = "checkItems", javaType = List.class, column = "id",
+                    many = @Many(select = "cn.edu.whut.binary.health.provider.mapper.CheckItemGroupMapper.getCheckItemsOfCheckGroup",
+                            fetchType = FetchType.LAZY))
     })
     List<CheckGroup> getCheckGroupsDetails(@Param("setMealId") Integer setMealId);
 }

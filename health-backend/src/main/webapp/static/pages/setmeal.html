@@ -428,7 +428,7 @@
                 if (!isLt2M) {
                     this.$message.error('套餐图片文件大小不能超过 2MB!');
                 }
-                return isJPG && isLt2M;
+                return (isJPG || isPNG) && isLt2M;
             },
 
             // 添加

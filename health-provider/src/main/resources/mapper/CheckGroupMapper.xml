@@ -8,7 +8,9 @@
         select *
         from t_checkgroup
         <where>
-            <if test="condition != null and condition != ''">name = #{condition} or code = #{condition} or helpCode = #{condition}</if>
+            <if test="condition != null and condition != ''">
+            name = #{condition} or code = #{condition} or helpCode = #{condition}
+            </if>
         </where>
     </select>
 

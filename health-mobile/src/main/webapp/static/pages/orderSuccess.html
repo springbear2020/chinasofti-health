@@ -11,13 +11,6 @@
     <link rel="icon" href="../img/asset-favico.ico">
     <title>预约须知</title>
     <link rel="stylesheet" href="../css/page-health-orderNotice.css"/>
-    <script src="../plugins/jquery/dist/jquery.min.js"></script>
-    <script src="../plugins/healthmobile.js"></script>
-    <script src="../plugins/vue/vue.js"></script>
-    <script src="../plugins/vue/axios-0.18.0.js"></script>
-    <script>
-        var id = getUrlParam("orderId");
-    </script>
 </head>
 <body data-spy="scroll" data-target="#myNavbar" data-offset="150">
 <div id="app" class="app">
@@ -60,16 +53,58 @@
     </div>
 </div>
 </body>
+
+<!-- 引入组件库 -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+
 <script>
     var vue = new Vue({
         el: '#app',
         data: {
-            orderInfo: {}
+            orderInfo: {
+                member: "",
+                setmeal: "",
+                orderType: "",
+                orderDate: ""
+            }
         },
+        methods: {
+            // 获取地址栏的请求参数
+            getUrlParam(paraName) {
+                var url = document.location.toString();
+                var arrObj = url.split("?");
+                if (arrObj.length > 1) {
+                    var arrPara = arrObj[1].split("&");
+                    var arr;
+                    for (var i = 0; i < arrPara.length; i++) {
+                        arr = arrPara[i].split("=");
+                        if (arr != null && arr[0] == paraName) {
+                            return arr[1];
+                        }
+                    }
+                    return "";
+                }
+                return "";
+            },
+
+            // 获取地址栏的请求参数，解决中文乱码
+            getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURI(r[2]);
+                return null;
+            },
+
+        },
+
         mounted() {
-            axios.post("/order/findById.do?id=" + id).then((response) => {
-                this.orderInfo = response.data.data;
-            });
+            this.orderInfo.member = this.getQueryString("name");
+            this.orderInfo.setmeal = this.getQueryString("setMealName");
+            this.orderInfo.orderDate = this.getQueryString("orderDate");
+            this.orderInfo.orderType = this.getQueryString("orderType");
         }
     });
 </script>

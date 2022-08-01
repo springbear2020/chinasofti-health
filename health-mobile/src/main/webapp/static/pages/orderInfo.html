@@ -12,15 +12,6 @@
     <title>编辑信息</title>
     <link rel="stylesheet" href="../css/page-health-orderInfo.css"/>
     <link rel="stylesheet" href="../plugins/elementui/index.css"/>
-    <script src="../plugins/jquery/dist/jquery.min.js"></script>
-    <script src="../plugins/healthmobile.js"></script>
-    <script src="../plugins/datapicker/datePicker.js"></script>
-    <script src="../plugins/vue/vue.js"></script>
-    <script src="../plugins/vue/axios-0.18.0.js"></script>
-    <script src="../plugins/elementui/index.js"></script>
-    <script>
-        var id = getUrlParam("id");
-    </script>
 </head>
 <body data-spy="scroll" data-target="#myNavbar" data-offset="150">
 <div id="app" class="app">
@@ -33,8 +24,9 @@
     <!-- 页面内容 -->
     <div class="contentBox">
         <div class="card">
+            <!-- 套餐展示 -->
             <div class="">
-                <img :src="'http://pqjroc654.bkt.clouddn.com/'+setmeal.img" width="100%" height="100%"/>
+                <img :src="setmeal.img" width="100%" height="100%"/>
             </div>
             <div class="project-text">
                 <h4 class="tit">{{setmeal.name}}</h4>
@@ -44,6 +36,8 @@
                     <span>{{setmeal.age}}</span>
                 </p>
             </div>
+
+            <!-- 预约须知 -->
             <div class="project-know">
                 <a href="orderNotice.html" class="link-page">
                     <i class="icon-ask-circle"><span class="path1"></span><span class="path2"></span></i>
@@ -52,6 +46,8 @@
                 </a>
             </div>
         </div>
+
+        <!-- 体检表单 -->
         <div class="form-info">
             <div class="info-title">
                 <span class="name">体检人信息</span>
@@ -59,7 +55,9 @@
             <form class="info-form">
                 <div class="input-row">
                     <label>体检人</label>
-                    <input v-model="orderInfo.name" type="text" class="input-clear" placeholder="请输入姓名">
+                    <label>
+                        <input v-model="orderInfo.name" type="text" class="input-clear" placeholder="请输入姓名">
+                    </label>
                 </div>
                 <div class="input-row single-radio">
                     <label class="radio-title">性别</label>
@@ -78,22 +76,34 @@
                 </div>
                 <div class="input-row">
                     <label>手机号</label>
-                    <input v-model="orderInfo.telephone" type="text" class="input-clear" placeholder="请输入手机号">
+                    <label>
+                        <input v-model="orderInfo.telephone" type="text" class="input-clear" placeholder="请输入手机号">
+                    </label>
                     <input style="font-size: x-small;" id="validateCodeButton" @click="sendValidateCode()" type="button"
                            value="发送验证码">
                 </div>
                 <div class="input-row">
                     <label>验证码</label>
-                    <input v-model="orderInfo.validateCode" type="text" class="input-clear" placeholder="请输入验证码">
+                    <label>
+                        <input v-model="orderInfo.validateCode" type="text" class="input-clear" placeholder="请输入验证码">
+                    </label>
                 </div>
                 <div class="input-row">
                     <label>身份证号</label>
-                    <input v-model="orderInfo.idCard" type="text" class="input-clear" placeholder="请输入身份证号">
+                    <label>
+                        <input v-model="orderInfo.idCard" type="text" class="input-clear" placeholder="请输入身份证号">
+                    </label>
                 </div>
-                <div class="date">
+                <div class="input-row">
                     <label>体检日期</label>
-                    <i class="icon-date" class="picktime"></i>
-                    <input v-model="orderInfo.orderDate" type="text" class="picktime" readonly>
+                    <div class="block">
+                        <el-date-picker
+                                v-model="orderInfo.orderDate"
+                                type="date"
+                                placeholder="选择日期"
+                                value-format='yyyy-MM-dd HH:mm:ss'>
+                        </el-date-picker>
+                    </div>
                 </div>
             </form>
             <div class="box-button">
@@ -102,40 +112,194 @@
         </div>
     </div>
 </div>
+<!-- 引入组件库 -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+
 <script>
     var vue = new Vue({
         el: '#app',
         data: {
-            setmeal: {},//套餐信息
+            setmeal: {},// 套餐信息
             orderInfo: {
-                setmealId: id,
-                sex: '1'
-            }//预约信息
+                name: "",
+                sex: "1",
+                telephone: "",
+                idCard: "",
+                orderDate: "",
+                validateCode: "",
+                setmealId: "",
+            },
+            // 与服务器约定的响应码
+            SUCCESS: 0,
+            INFO: 1,
+            WARNING: 2,
+            ERROR: 3
         },
         methods: {
-            //发送验证码
-            sendValidateCode() {
+            // 通知提示框
+            showNotice(code, msg) {
+                if (this.SUCCESS == code) {
+                    this.$notify.success({
+                        title: '成功',
+                        message: msg,
+                    });
+                } else if (this.INFO == code) {
+                    this.$notify.info({
+                        title: '提示',
+                        message: msg,
+                    });
+                } else if (this.WARNING == code) {
+                    this.$notify.warning({
+                        title: '警告',
+                        message: msg,
+                    });
+                } else if (this.ERROR == code) {
+                    this.$notify.error({
+                        title: '失败',
+                        message: msg,
+                    });
+                }
             },
-            //提交预约
+
+            // 获取地址栏的请求参数
+            getUrlParam(paraName) {
+                var url = document.location.toString();
+                var arrObj = url.split("?");
+                if (arrObj.length > 1) {
+                    var arrPara = arrObj[1].split("&");
+                    var arr;
+                    for (var i = 0; i < arrPara.length; i++) {
+                        arr = arrPara[i].split("=");
+                        if (arr != null && arr[0] == paraName) {
+                            return arr[1];
+                        }
+                    }
+                    return "";
+                }
+                return "";
+            },
+
+            // 校验手机号格式
+            checkTelephone(telephone) {
+                var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+                if (!reg.test(telephone)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+
+            // 校验身份证号格式
+            checkIdCard(idCard) {
+                var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if (reg.test(idCard)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
+            parseDate: function (date) {
+                var nowMonth = date.getMonth() + 1;
+                var strDate = date.getDate();
+                var separator = "-";
+                if (nowMonth >= 1 && nowMonth <= 9) {
+                    nowMonth = "0" + nowMonth;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                return date.getFullYear() + separator + nowMonth + separator + strDate;
+            },
+
+            // 发送验证码
+            sendValidateCode() {
+                var phoneNumber = this.orderInfo.telephone;
+                // 校验手机号格式
+                if (!this.checkTelephone(phoneNumber)) {
+                    this.$message.error('手机号码格式不正确，请重新输入');
+                    return false;
+                }
+
+                // 倒计时一分钟
+                var $obtainBtn = $("#validateCodeButton");
+                $obtainBtn.attr("disabled", 'disabled');
+                let countingTime = 120;
+                let time = setInterval(function () {
+                    countingTime--;
+                    $obtainBtn.val("重新获取 " + countingTime + " s");
+                    if (countingTime <= 0) {
+                        $obtainBtn.val("获取验证码");
+                        $obtainBtn.attr("disabled", false);
+                        clearInterval(time);
+                    }
+                }, 1000);
+
+                // 请求服务器发送验证码
+                axios.get("/digit.do?phone=" + phoneNumber).then((response) => {
+                    this.showNotice(response.data.code, response.data.msg);
+                });
+            },
+
+            // 提交预约
             submitOrder() {
+                // 校验格式
+                if (this.orderInfo.name == null || this.orderInfo.name.length <= 0) {
+                    this.$message.error('体检人姓名不能为空，请重新输入');
+                    return false;
+                }
+                if (!this.checkTelephone(this.orderInfo.telephone)) {
+                    this.$message.error('手机号码格式不正确，请重新输入');
+                    return false;
+                }
+                if (this.orderInfo.validateCode == null || this.orderInfo.validateCode.length <= 0) {
+                    this.$message.error('验证码不能为空，请重新输入');
+                    return false;
+                }
+                if (!this.checkIdCard(this.orderInfo.idCard)) {
+                    this.$message.error('身份证号格式不正确，请重新输入');
+                    return false;
+                }
+                if (this.orderInfo.orderDate == null || this.orderInfo.orderDate.length <= 0) {
+                    this.$message.error('请选择预约日期');
+                    return false;
+                }
+
+                // 请求服务器保存预约信息
+                axios({
+                    url: "/order.do",
+                    method: "post",
+                    params: this.orderInfo
+                }).then(response => {
+                    if (this.SUCCESS == response.data.code) {
+                        var name = response.data.resultMap.name;
+                        var setMealName = response.data.resultMap.setMealName;
+                        var orderType = response.data.resultMap.orderType;
+                        var datetime = response.data.resultMap.orderDate;
+                        let strings = datetime.split(" ");
+                        var orderDate = strings[0];
+                        window.location.href = "orderSuccess.html?name=" + name + "&setMealName=" + setMealName + "&orderType=" + orderType + "&orderDate=" + orderDate;
+                    } else {
+                        this.showNotice(response.data.code, response.data.msg);
+                    }
+                });
             }
         },
         mounted() {
-        }
-    });
-</script>
-<script>
-    //日期控件
-    var calendar = new datePicker();
-    calendar.init({
-        'trigger': '.picktime',/*按钮选择器，用于触发弹出插件*/
-        'type': 'date',/*模式：date日期；datetime日期时间；time时间；ym年月；*/
-        'minDate': getSpecifiedDate(new Date(), 1),/*最小日期*/
-        'maxDate': getSpecifiedDate(new Date(), 30),/*最大日期*/
-        'onSubmit': function () { /*确认时触发事件*/
-            //var theSelectData = calendar.value;
-        },
-        'onClose': function () { /*取消时触发事件*/
+            var setMealId = this.getUrlParam("setMealId");
+            this.orderInfo.setmealId = setMealId;
+            // 从服务器获取当前套餐
+            axios.get("/setMeal/" + setMealId + ".do").then((response) => {
+                if (this.SUCCESS == response.data.code) {
+                    this.setmeal = response.data.resultMap.item;
+                    this.imgUrl = this.setmeal.img;
+                } else {
+                    this.showNotice(response.data.code, response.data.msg);
+                }
+            });
         }
     });
 </script>

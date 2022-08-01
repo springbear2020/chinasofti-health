@@ -78,7 +78,6 @@
 <script src="../js/vue.js"></script>
 <script src="../plugins/elementui/index.js"></script>
 <script src="../js/axios-0.18.0.js"></script>
-<script src="../plugins/healthmobile.js"></script>
 
 <script>
     var vue = new Vue({
@@ -86,6 +85,7 @@
         data: {
             imgUrl: null,// 套餐对应的图片链接
             setmeal: {},
+            setMealId: -1,
             // 与服务器约定的响应码
             SUCCESS: 0,
             INFO: 1,
@@ -94,7 +94,7 @@
         },
         methods: {
             toOrderInfo() {
-                window.location.href = "orderInfo.html?id=" + id;
+                window.location.href = "orderInfo.html?setMealId=" + this.setMealId;
             },
             // 通知提示框
             showNotice(code, msg) {
@@ -141,7 +141,7 @@
         },
         mounted() {
             var id = this.getUrlParam("id");
-
+            this.setMealId = id;
             axios.get("/setMeal/" + id + ".do").then((response) => {
                 if (this.SUCCESS == response.data.code) {
                     this.setmeal = response.data.resultMap.item;

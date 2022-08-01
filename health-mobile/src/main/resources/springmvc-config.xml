@@ -3,10 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/mvc
-                        http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://code.alibabatech.com/schema/dubbo
+                        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <!-- Controller scan -->
     <context:component-scan base-package="cn.edu.whut.binary.health.mobile.controller"/>
 
@@ -26,5 +31,8 @@
     </mvc:annotation-driven>
 
     <!-- Dubbo -->
-    <import resource="dubbo-customer.xml"/>
+    <dubbo:application name="health-mobile"/>
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <dubbo:consumer timeout="9000" check="false"/>
+    <dubbo:annotation package="cn.edu.whut.binary.health.mobile.controller"/>
 </beans>

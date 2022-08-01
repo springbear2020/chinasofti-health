@@ -13,11 +13,6 @@
     <link rel="stylesheet" href="../css/page-health-index.css"/>
     <link rel="stylesheet" href="../css/page-health-login.css"/>
     <link rel="stylesheet" href="../plugins/elementui/index.css"/>
-    <script src="../plugins/jquery/dist/jquery.min.js"></script>
-    <script src="../plugins/healthmobile.js"></script>
-    <script src="../plugins/vue/vue.js"></script>
-    <script src="../plugins/vue/axios-0.18.0.js"></script>
-    <script src="../plugins/elementui/index.js"></script>
 </head>
 <body data-spy="scroll" data-target="#myNavbar" data-offset="150">
 <div class="app">
@@ -45,7 +40,7 @@
         <div class="list-column2">
             <ul class="list">
                 <li class="type-item">
-                    <a href="/pages/setmeal.html" class="link-page">
+                    <a href="setmeal.html" class="link-page">
                         <div class="type-title">
                             <h3>体检预约</h3>
                             <p>实时预约</p>
@@ -58,7 +53,7 @@
                     </a>
                 </li>
                 <li class="type-item">
-                    <a href="/pages/checkrecord_list.html" class="link-page">
+                    <a href="checkrecord_list.html" class="link-page">
                         <div class="type-title">
                             <h3>报告查询</h3>
                             <p>一键查询</p>
@@ -121,6 +116,12 @@
         </div>
     </div>
 </div>
+<!-- 引入组件库 -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+
 <script>
     $(function () {
         var ht = $('.banner-item').find('img').eq(0).height()

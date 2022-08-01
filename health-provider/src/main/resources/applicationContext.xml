@@ -2,14 +2,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                            http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+                            http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://code.alibabatech.com/schema/dubbo
+                            http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <!-- Component scan -->
     <context:component-scan
             base-package="cn.edu.whut.binary.health.provider.mapper, cn.edu.whut.binary.health.provider.service.impl"/>
 
     <!-- Datasource-->
-    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClass}"/>
         <property name="url" value="${jdbc.url}"/>
@@ -28,21 +33,24 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
-<!--    &lt;!&ndash; Jedis connection pool &ndash;&gt;-->
-<!--    <context:property-placeholder location="classpath:redis.properties"/>-->
-<!--    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
-<!--        <property name="maxTotal" value="${redis.pool.maxTotal}"/>-->
-<!--        <property name="maxIdle" value="${redis.pool.maxIdle}"/>-->
-<!--        <property name="minIdle" value="${redis.pool.minIdle}"/>-->
-<!--        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>-->
-<!--    </bean>-->
-<!--    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">-->
-<!--        <constructor-arg name="poolConfig" ref="poolConfig"/>-->
-<!--        <constructor-arg name="host" value="${redis.host}"/>-->
-<!--        <constructor-arg name="port" value="${redis.port}" type="int"/>-->
-<!--        <constructor-arg name="timeout" value="${redis.timeout}" type="int"/>-->
-<!--    </bean>-->
+    <!-- Jedis connection pool -->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="minIdle" value="${redis.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+    </bean>
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="host" value="${redis.host}"/>
+        <constructor-arg name="port" value="${redis.port}" type="int"/>
+        <constructor-arg name="timeout" value="${redis.timeout}" type="int"/>
+    </bean>
 
     <!-- Dubbo -->
-    <import resource="classpath:dubbo-provider.xml"/>
+    <dubbo:application name="health-provider" owner="springbear"/>
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <dubbo:protocol name="dubbo" port="20880"/>
+    <dubbo:annotation package="cn.edu.whut.binary.health.provider.service.impl"/>
 </beans>

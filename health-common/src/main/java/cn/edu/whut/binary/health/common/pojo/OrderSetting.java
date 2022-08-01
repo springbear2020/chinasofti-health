@@ -27,6 +27,7 @@ public class OrderSetting implements Serializable {
     /**
      * 已预约人数
      */
+    @ExcelColumnName("已预约人数")
     private Integer reservations;
 
     public OrderSetting() {
