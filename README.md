@@ -1,20 +1,22 @@
-> 开发时间：2022-07.04 - 至今
+> 开发时间：2022-07.04 - 2022.08.02
 
 # 一、快速开始
 
 1.  克隆仓库：使用 Git 克隆仓库或直接下载仓库压缩包到您的计算机
-
-2. 打开工程：使用 `IntelliJ IDEA`  打开克隆的仓库或解压的工程文件，而后使用 Maven 工具更新父工程依赖
-
-3. 创建数据库和表：登录 MySQL  创建 `health` 数据库，将 `health-provider/src/main/resources/sql/health.sql` 文件中的数据库表导入 health 数据库中
-
-4. 修改配置信息：
-
-   > 1. 修改 `health-provider/src/main/resources/jdbc.properties` 中的数据库用户名和密码信息 
-
-5. 启动 `ZooKeeper` 服务器：双击 zookeeper 安装目录下的 `ZKserver.cmd` 启动服务（默认监听 2181 端口）
-
-6. 部署访问：部署 Tomcat 启动 `health-provider`，而后再启动 `health-backend`
+2.  打开工程：使用 `IntelliJ IDEA`  打开克隆的仓库或解压的工程文件，而后使用 `Maven` 工具更新父工程 `health` 依赖
+3.  创建数据库和表：
+    - 登录 MySQL  创建 `health_care` 数据库
+    - 将 `health-provider/src/main/resources/health_care.sql` 文件中的数据库表导入 health_care 数据库中
+4.  修改配置信息：
+   - 修改 `health-provider/src/main/resources/jdbc.properties` 中的数据库连接信息，设置你自己的用户名和密码
+   - 修改 `health-provider/src/main/resources/qiniu.properties` 中的七牛云配置信息，设置你自己的 [七牛云](https://www.qiniu.com/) 账号信息
+5.  启动服务：
+   - 启动 `ZooKeeper` 服务器：双击 zookeeper 安装目录下的 `bin/ZKserver.cmd` 启动服务
+   - 启动 `Redis` 服务器：双击 Redis 安装目录下的 `redis-server.exe` 启动服务
+6.  部署访问：三个模块需使用不同的端口
+    - 为 `health-provider` 模块部署 Tomcat，启动后台服务
+    - 为 `health-backend` 模块部署 Tomcat，进入美年健康后台管理
+    - 为 `health-mobild` 模块部署 Tomcat，进入美年健康移动端
 
 # 二、项目概述
 
