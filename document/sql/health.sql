@@ -17,6 +17,10 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+CREATE DATABASE IF NOT EXISTS `health`;
+
+USE `health`;
+
 -- ----------------------------
 -- Table structure for t_checkgroup
 -- ----------------------------
