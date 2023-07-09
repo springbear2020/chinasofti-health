@@ -7,6 +7,7 @@
         <img src="https://img.shields.io/static/v1?label=%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE&message=chinasofti-health&color=18a745"/>
     </a>
 </p>
+
 # 一、快速开始
 
 1. 克隆仓库：使用 Git 克隆仓库或直接下载仓库压缩包到您的计算机来获取源代码。
@@ -111,7 +112,7 @@ chinasofti-health		-- 父工程，统一管理项目依赖
 ├── document			-- 项目资源目录
 ├── health-backend		-- 后台管理系统，打包方式为 war，作为服务消费方，需单独启动服务
 ├── health-common		-- 通用模块，打包方式为 jar，存放通用工具类和实体类等
-├── health-interface	-- 接口模块，打包方式为 jar，存放服务层接口类
+├── health-interface            -- 接口模块，打包方式为 jar，存放服务层接口类
 ├── health-mobile		-- 前台应用系统，打包方式为 war，作为服务消费方，通过 Dubbo 暴露服务，需单独启动服务
 └── health-provider		-- 后端服务模块，打包方式为 war，作为服务提供方，需单独启动服务
 ```
