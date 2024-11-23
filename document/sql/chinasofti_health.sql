@@ -17,9 +17,9 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE IF NOT EXISTS `health`;
+CREATE DATABASE IF NOT EXISTS `chinasofti_health`;
 
-USE `health`;
+USE `chinasofti_health`;
 
 -- ----------------------------
 -- Table structure for t_checkgroup

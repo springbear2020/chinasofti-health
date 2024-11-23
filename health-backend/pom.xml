@@ -71,6 +71,7 @@
     </dependencies>
 
     <build>
+        <finalName>chinasofti-health-backend</finalName>
         <plugins>
             <!-- Tomcat7 -->
             <plugin>

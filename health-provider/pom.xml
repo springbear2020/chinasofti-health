@@ -107,6 +107,7 @@
     </dependencies>
 
     <build>
+        <finalName>chinasofti-health-provider</finalName>
         <plugins>
             <!-- Tomcat7 -->
             <plugin>

@@ -14,7 +14,7 @@
 
 2. 打开工程：使用 IntelliJ IDEA 开发工具打开克隆的仓库或解压的工程文件，而后使用 Maven 项目构建工具更新工程模块依赖。
 
-3. 创建数据库并导入数据：登录 MySQL 控制台，创建一个名为 health 的数据库，并将 document/sql/health.sql 脚本中的建表语句和数据导入到 health 数据库中。
+3. 创建数据库并导入数据：登录 MySQL 控制台，创建一个名为 chinasofti_health 的数据库，并将 document/sql/chinasofti_health.sql 脚本中的建表语句和数据导入到 health 数据库中。
 
 4. 修改配置：
 
